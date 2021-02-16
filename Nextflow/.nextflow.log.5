@@ -1,0 +1,147 @@
+Jan-09 13:34:50.766 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile docker,test -resume
+Jan-09 13:34:50.913 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 20.04.1
+Jan-09 13:34:50.929 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [gigantic_wright] - revision: b04364c0cc
+Jan-09 13:34:50.952 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/nextflow.config
+Jan-09 13:34:50.953 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/nextflow.config
+Jan-09 13:34:50.984 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `docker,test`
+Jan-09 13:34:51.429 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [debug, test, conda, awsbatch, singularity, docker]
+Jan-09 13:34:51.477 [main] DEBUG nextflow.Session - Session uuid: bcc9bce1-d03e-40d6-afc6-4eb5693a6348
+Jan-09 13:34:51.477 [main] DEBUG nextflow.Session - Run name: gigantic_wright
+Jan-09 13:34:51.477 [main] DEBUG nextflow.Session - Executor pool size: 12
+Jan-09 13:34:51.515 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 20.04.1 build 5335
+  Created: 03-05-2020 19:37 UTC (21:37 CEST)
+  System: Linux 5.4.0-58-generic
+  Runtime: Groovy 2.5.8 on OpenJDK 64-Bit Server VM 11.0.9.1+1-Ubuntu-0ubuntu1.20.04
+  Encoding: UTF-8 (UTF-8)
+  Process: 229695@adm-125488 [127.0.0.1]
+  CPUs: 12 - Mem: 31.2 GB (3.8 GB) - Swap: 976 MB (966.9 MB)
+Jan-09 13:34:51.558 [main] DEBUG nextflow.Session - Work-dir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work [ext2/ext3]
+Jan-09 13:34:51.558 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/bin
+Jan-09 13:34:51.580 [main] DEBUG nextflow.Session - Observer factory: TowerFactory
+Jan-09 13:34:51.582 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jan-09 13:34:51.773 [main] DEBUG nextflow.Session - Session start invoked
+Jan-09 13:34:52.106 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jan-09 13:34:52.115 [main] DEBUG nextflow.Session - Workflow process names [dsl1]: create_searchgui_paramfile, get_peptideshaker_tsv, convert_raw_mzml, flashLFQ_all, run_msqrob, run_peptideshaker, create_decoy_database, run_searchgui_search
+Jan-09 13:34:52.162 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: data/; pattern: *.raw; options: [:]
+Jan-09 13:34:52.218 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: data/; pattern: *.fasta; options: [:]
+Jan-09 13:34:52.227 [main] WARN  nextflow.Nextflow - No experimental design! All raw files will be considered being from the one and the same experimental condition.
+Jan-09 13:34:52.298 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.298 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.304 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Jan-09 13:34:52.309 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=12; memory=31.2 GB; capacity=12; pollInterval=100ms; dumpInterval=5m
+Jan-09 13:34:52.389 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.389 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.396 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.396 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.424 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.425 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.444 [main] DEBUG nextflow.processor.TaskProcessor - Creating *combiner* operator for each param(s) at index(es): [0]
+Jan-09 13:34:52.470 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.470 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.475 [main] DEBUG nextflow.processor.TaskProcessor - Creating *combiner* operator for each param(s) at index(es): [1]
+Jan-09 13:34:52.484 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.484 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.501 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.502 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.514 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 13:34:52.515 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 13:34:52.522 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Jan-09 13:34:52.523 [main] DEBUG nextflow.Session - Session await
+Jan-09 13:34:52.579 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [14/477474] Cached process > create_decoy_database (1)
+Jan-09 13:34:52.579 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [0e/81aff3] Cached process > convert_raw_mzml (1)
+Jan-09 13:34:52.579 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [29/7cbe09] Cached process > convert_raw_mzml (2)
+Jan-09 13:34:52.579 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [04/5bb658] Cached process > create_searchgui_paramfile
+Jan-09 13:34:52.660 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [75/4e3a8b] Cached process > run_searchgui_search (2)
+Jan-09 13:34:52.660 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [d1/e90dbb] Cached process > run_searchgui_search (1)
+Jan-09 13:34:52.678 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [9a/bab6ba] Cached process > run_peptideshaker (1)
+Jan-09 13:34:52.678 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [6e/4e4b6c] Cached process > run_peptideshaker (2)
+Jan-09 13:34:52.693 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [7e/de94a3] Cached process > get_peptideshaker_tsv (2)
+Jan-09 13:34:52.693 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [9f/bbe39e] Cached process > get_peptideshaker_tsv (1)
+Jan-09 13:34:52.708 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [eb/a4e40a] Cached process > flashLFQ_all
+Jan-09 13:34:52.766 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 13:34:52.772 [Task submitter] INFO  nextflow.Session - [82/38415f] Submitted process > run_msqrob (1)
+Jan-09 13:34:57.985 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 12; name: run_msqrob (1); status: COMPLETED; exit: 1; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/82/38415fa43a14d9669a239751d4f08d]
+Jan-09 13:34:58.009 [Task monitor] ERROR nextflow.processor.TaskProcessor - Error executing process > 'run_msqrob (1)'
+
+Caused by:
+  Process `run_msqrob (1)` terminated with an error exit status (1)
+
+Command executed:
+
+  echo "run	genotype	biorep
+  OVEMB150205_12	Main	A1
+  OVEMB150205_14	Main	A2" > none
+      cp "none" exp_design.tsv
+      mv "QuantifiedPeptides.tsv" q_input.txt
+      Rscript /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/runMSqRob.R
+
+Command exit status:
+  1
+
+Command output:
+  [1] "HERE"
+
+Command error:
+  Attaching package: ‘ProtGenerics’
+  
+  The following object is masked from ‘package:stats’:
+  
+      smooth
+  
+  
+  This is MSnbase version 2.16.0 
+    Visit https://lgatto.github.io/MSnbase/ to get started.
+  
+  
+  Attaching package: ‘MSnbase’
+  
+  The following object is masked from ‘package:base’:
+  
+      trimws
+  
+  Warning messages:
+  1: package ‘MSnbase’ was built under R version 4.0.3 
+  2: package ‘Biobase’ was built under R version 4.0.3 
+  3: package ‘mzR’ was built under R version 4.0.3 
+  4: package ‘Rcpp’ was built under R version 4.0.3 
+  5: package ‘S4Vectors’ was built under R version 4.0.3 
+  6: package ‘ProtGenerics’ was built under R version 4.0.3 
+  Loading required package: lme4
+  Loading required package: Matrix
+  
+  Attaching package: ‘Matrix’
+  
+  The following object is masked from ‘package:S4Vectors’:
+  
+      expand
+  
+  
+  Attaching package: ‘MSqRob’
+  
+  The following object is masked from ‘package:lme4’:
+  
+      getData
+  
+  Warning messages:
+  1: package ‘lme4’ was built under R version 4.0.3 
+  2: package ‘Matrix’ was built under R version 4.0.3 
+  Warning message:
+  In options(stringsAsFactors = T) :
+    'options(stringsAsFactors = TRUE)' is deprecated and will be disabled
+  Error in h(simpleError(msg, call)) : 
+    error in evaluating the argument 'x' in selecting a method for function 'as.factor': undefined columns selected
+  Calls: as.factor -> [ -> [.data.frame
+  Execution halted
+
+Work dir:
+  /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/82/38415fa43a14d9669a239751d4f08d
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+Jan-09 13:34:58.013 [main] DEBUG nextflow.Session - Session await > all process finished
+Jan-09 13:34:58.017 [Task monitor] INFO  nextflow.Session - Execution cancelled -- Finishing pending tasks before exit
+Jan-09 13:34:58.023 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jan-09 13:34:58.026 [main] INFO  nextflow.Nextflow - Oops .. something went wrong
+Jan-09 13:34:58.037 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=11; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=5.2s; cachedDuration=3m 55s;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=6 GB; ]
+Jan-09 13:34:58.250 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+Jan-09 13:34:58.273 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

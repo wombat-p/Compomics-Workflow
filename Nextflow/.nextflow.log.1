@@ -1,0 +1,94 @@
+Jan-09 14:04:29.362 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --mbr true -profile docker,test -resume
+Jan-09 14:04:29.504 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 20.04.1
+Jan-09 14:04:29.519 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [compassionate_bartik] - revision: d5872c1884
+Jan-09 14:04:29.542 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/nextflow.config
+Jan-09 14:04:29.543 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/nextflow.config
+Jan-09 14:04:29.576 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `docker,test`
+Jan-09 14:04:30.023 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [debug, test, conda, awsbatch, singularity, docker]
+Jan-09 14:04:30.072 [main] DEBUG nextflow.Session - Session uuid: bcc9bce1-d03e-40d6-afc6-4eb5693a6348
+Jan-09 14:04:30.073 [main] DEBUG nextflow.Session - Run name: compassionate_bartik
+Jan-09 14:04:30.073 [main] DEBUG nextflow.Session - Executor pool size: 12
+Jan-09 14:04:30.117 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 20.04.1 build 5335
+  Created: 03-05-2020 19:37 UTC (21:37 CEST)
+  System: Linux 5.4.0-58-generic
+  Runtime: Groovy 2.5.8 on OpenJDK 64-Bit Server VM 11.0.9.1+1-Ubuntu-0ubuntu1.20.04
+  Encoding: UTF-8 (UTF-8)
+  Process: 233245@adm-125488 [127.0.0.1]
+  CPUs: 12 - Mem: 31.2 GB (458.2 MB) - Swap: 976 MB (966.4 MB)
+Jan-09 14:04:30.161 [main] DEBUG nextflow.Session - Work-dir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work [ext2/ext3]
+Jan-09 14:04:30.162 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/bin
+Jan-09 14:04:30.196 [main] DEBUG nextflow.Session - Observer factory: TowerFactory
+Jan-09 14:04:30.199 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jan-09 14:04:30.392 [main] DEBUG nextflow.Session - Session start invoked
+Jan-09 14:04:30.755 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jan-09 14:04:30.766 [main] DEBUG nextflow.Session - Workflow process names [dsl1]: create_searchgui_paramfile, get_peptideshaker_tsv, convert_raw_mzml, flashLFQ_all, run_msqrob, run_peptideshaker, create_decoy_database, run_searchgui_search
+Jan-09 14:04:30.816 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: data/; pattern: *.raw; options: [:]
+Jan-09 14:04:30.875 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: data/; pattern: *.fasta; options: [:]
+Jan-09 14:04:30.883 [main] WARN  nextflow.Nextflow - No experimental design! All raw files will be considered being from the one and the same experimental condition.
+Jan-09 14:04:30.966 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:30.966 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:30.972 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Jan-09 14:04:30.977 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=12; memory=31.2 GB; capacity=12; pollInterval=100ms; dumpInterval=5m
+Jan-09 14:04:31.060 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.060 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.067 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.067 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.099 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.099 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.123 [main] DEBUG nextflow.processor.TaskProcessor - Creating *combiner* operator for each param(s) at index(es): [0]
+Jan-09 14:04:31.150 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.150 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.155 [main] DEBUG nextflow.processor.TaskProcessor - Creating *combiner* operator for each param(s) at index(es): [1]
+Jan-09 14:04:31.163 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.164 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.180 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.181 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.192 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-09 14:04:31.192 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-09 14:04:31.197 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Jan-09 14:04:31.197 [main] DEBUG nextflow.Session - Session await
+Jan-09 14:04:31.246 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:31.251 [Task submitter] INFO  nextflow.Session - [b8/078899] Submitted process > create_decoy_database (1)
+Jan-09 14:04:31.259 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:31.259 [Task submitter] INFO  nextflow.Session - [a0/035142] Submitted process > convert_raw_mzml (2)
+Jan-09 14:04:31.266 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:31.267 [Task submitter] INFO  nextflow.Session - [16/fec8d2] Submitted process > convert_raw_mzml (1)
+Jan-09 14:04:31.273 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:31.274 [Task submitter] INFO  nextflow.Session - [04/5bb658] Submitted process > create_searchgui_paramfile
+Jan-09 14:04:33.984 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 4; name: create_searchgui_paramfile; status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/04/5bb65844b31101ad7b39847ee37736]
+Jan-09 14:04:37.246 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 3; name: create_decoy_database (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/b8/0788998e831a7163f471d50cecfb81]
+Jan-09 14:04:39.307 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: convert_raw_mzml (2); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/a0/035142ed49ebb5950a7b843b7b4501]
+Jan-09 14:04:39.488 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: convert_raw_mzml (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/16/fec8d275e5523ab81711a75fc5be4c]
+Jan-09 14:04:39.540 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:39.541 [Task submitter] INFO  nextflow.Session - [d2/715d69] Submitted process > run_searchgui_search (2)
+Jan-09 14:04:39.548 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:39.549 [Task submitter] INFO  nextflow.Session - [08/3ce9ff] Submitted process > run_searchgui_search (1)
+Jan-09 14:04:55.214 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 5; name: run_searchgui_search (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/08/3ce9ffc463f3f023b830113ad4f4dc]
+Jan-09 14:04:55.243 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:55.243 [Task submitter] INFO  nextflow.Session - [73/6f6c80] Submitted process > run_peptideshaker (1)
+Jan-09 14:04:56.150 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 6; name: run_searchgui_search (2); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/d2/715d69b79a9ceb7c8303a0dcf1bf7f]
+Jan-09 14:04:56.163 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:04:56.164 [Task submitter] INFO  nextflow.Session - [8a/6ba309] Submitted process > run_peptideshaker (2)
+Jan-09 14:06:24.473 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 7; name: run_peptideshaker (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/73/6f6c804d9f256217d4984dc7a55217]
+Jan-09 14:06:24.495 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:06:24.496 [Task submitter] INFO  nextflow.Session - [e5/d5311c] Submitted process > get_peptideshaker_tsv (1)
+Jan-09 14:06:31.541 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 8; name: run_peptideshaker (2); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/8a/6ba30957217e4294fc53d935d6659e]
+Jan-09 14:06:31.558 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:06:31.559 [Task submitter] INFO  nextflow.Session - [55/8718fd] Submitted process > get_peptideshaker_tsv (2)
+Jan-09 14:06:44.156 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 9; name: get_peptideshaker_tsv (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/e5/d5311ce35b9d1dd27f7222ad1333df]
+Jan-09 14:06:47.991 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 10; name: get_peptideshaker_tsv (2); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/55/8718fdd2affe2167fae46acb046f3c]
+Jan-09 14:06:48.023 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:06:48.024 [Task submitter] INFO  nextflow.Session - [d0/4ed947] Submitted process > flashLFQ_all
+Jan-09 14:06:55.559 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 11; name: flashLFQ_all; status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/d0/4ed947f2ef94f096f80fcbf56e253c]
+Jan-09 14:06:55.571 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-09 14:06:55.571 [Task submitter] INFO  nextflow.Session - [76/908ea5] Submitted process > run_msqrob (1)
+Jan-09 14:07:14.776 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 12; name: run_msqrob (1); status: COMPLETED; exit: 0; error: -; workDir: /home/veits/devel/Bioinformatics/ELIXIR_EDAM/IS_Benchmarking/Compomics/Nextflow/work/76/908ea5260725915e4e705b74ec89df]
+Jan-09 14:07:14.778 [main] DEBUG nextflow.Session - Session await > all process finished
+Jan-09 14:07:14.778 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jan-09 14:07:14.780 [main] INFO  nextflow.Nextflow - 
+Done! Open the files in the following folder --> ./results
+
+Jan-09 14:07:14.783 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=12; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=5m 4s; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=4; peakCpus=4; peakMemory=24 GB; ]
+Jan-09 14:07:14.855 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+Jan-09 14:07:14.873 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
