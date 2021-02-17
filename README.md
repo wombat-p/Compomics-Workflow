@@ -3,6 +3,11 @@
 This workflow is based on a docker image which is available at the docker hub (https://hub.docker.com/repository/docker/veitveit/compomicsworkflow) and is downloaded automatically.
 If you want to build your own docker image, be aware that it needs to be named veitveit/compomicsworkflow:dev or change the name in the configuration file. 
 
+## Content
+_Nextflow folder:_ Implementation of workflow
+
+_Results folder:_ Results from the running the UPS data set
+
 ## Getting started
 
 Here is a little script that can be used to test the workflow execution.
@@ -19,7 +24,7 @@ newgrp docker
 
 # Fetch scripts and data
 git clone https://github.com/veitveit/IS_Benchmarking.git
-cd ./IS_Benchmarking/TPP/Nextflow/data
+cd ./Compomics-Workflow/Nextflow/data
 
 # Nextflow
 cd ..
