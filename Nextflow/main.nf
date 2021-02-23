@@ -257,7 +257,7 @@ process run_searchgui_search{
         mkdir tmp
         mkdir log       
         searchgui eu.isas.searchgui.cmd.PathSettingsCLI -temp_folder ./tmp -log ./log
-         searchgui eu.isas.searchgui.cmd.SearchCLI -spectrum_files ./  -output_folder ./ -fasta_file "${fasta_decoy}"  -id_params "${paramfile}" -threads ${task.cpus} \\
+         searchgui eu.isas.searchgui.cmd.SearchCLI -spectrum_files ./  -output_folder ./ -fasta_file "./${fasta_decoy}"  -id_params "./${paramfile}" -threads ${task.cpus} \\
          -xtandem ${params.run_xtandem} -msgf ${params.run_msgf} -comet ${params.run_comet} -ms_amanda ${params.run_ms_amanda} -myrimatch ${params.run_myrimatch}
          mv searchgui_out.zip ${mzmlfile.baseName}.zip
 
@@ -361,14 +361,18 @@ process run_msqrob {
       file "MSqRobOut.csv"  into msqrob_prot_out
 
     script:
-     // no file provided
-      expdesign_text = "run\tgenotype\tbiorep"
+   // no file provided
+    expdesign_text = "run\tgenotype\tbiorep"
     if (exp_design.getName() == "none") {
-      for( int i=0; i<rawfiles.size(); i++ ) {
-         biorep = i+1
-         expdesign_text += "\n${rawfiles[i].baseName}\tMain\tA${biorep}"
-      }
-   } 
+        if(rawfiles[1] != null) {
+                for( int i=0; i<rawfiles.size(); i++ ) {
+                   biorep = i+1
+                   expdesign_text += "\n${rawfiles[i].getBaseName()}\tMain\tA${biorep}"
+                }
+        } else {
+          expdesign_text += "\n${rawfiles.getBaseName()}\tMain\tA1"
+        }
+    }
 
     """
     echo "${expdesign_text}" > none
