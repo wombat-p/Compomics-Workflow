@@ -12,8 +12,8 @@ dependencies:
   - pandas=0.24.2
 #  - brain-isotopic-distribution=1.5.3
   - thermorawfileparser=1.2.3
-  - searchgui=4.0.7
-  - peptide-shaker=2.0.5
+  - searchgui=4.0.12
+  - peptide-shaker=2.0.9
   - unzip=6.0 
   - mono=5.14.0.177
   - libopenblas=0.3.3
