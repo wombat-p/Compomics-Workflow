@@ -52,3 +52,29 @@ jobs:
         # Remember that you can parallelise this by using strategy.matrix
       run: |
           nextflow run main.nf -profile test,docker
+
+  push_dockerhub:
+    name: Push new Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    # Only run if the tests passed
+    needs: build
+    # Only run for the releases
+    if: ${{ github.event_name == 'release' }}
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+    steps:
+	- name: Check out pipeline code
+	uses: actions/checkout@v2
+
+	- name: Build new docker image
+	run: docker build --no-cache . -t wombatp:${WORKFLOW}:latest
+
+        - name: Push Docker image to DockerHub (release)
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker push wombatp:${WORKFLOW}:latest
+          docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${{ github.ref }}
+          docker push wombatp:${WORKFLOW}:${{ github.ref }}:latest
+
