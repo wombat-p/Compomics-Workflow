@@ -64,15 +64,15 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
     steps:
-	- name: Check out pipeline code
-	uses: actions/checkout@v2
+     - name: Check out pipeline code
+     uses: actions/checkout@v2
 
-	- name: Build new docker image
-	run: docker build --no-cache . -t wombatp:${WORKFLOW}:latest
+     - name: Build new docker image
+       run: docker build --no-cache . -t wombatp:${WORKFLOW}:latest
 
-        - name: Push Docker image to DockerHub (release)
-        if: ${{ github.event_name == 'release' }}
-        run: |
+     - name: Push Docker image to DockerHub (release)
+       if: ${{ github.event_name == 'release' }}
+       run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           docker push wombatp:${WORKFLOW}:latest
           docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${{ github.ref }}
