@@ -16,5 +16,6 @@ ENV PATH /opt/conda/envs/nf-core-moff-labelfree/bin:$PATH
 RUN chmod -R a+rwx /opt/conda/envs/nf-core-moff-labelfree/share/searchgui-*/resources
 RUN chmod -R a+rwx /opt/conda/envs/nf-core-moff-labelfree/share/peptide-shaker-*/resources
 
+USER root 
 
 #ENTRYPOINT ["conda", "run", "-n", "moFF", "/bin/bash", "-c"]
