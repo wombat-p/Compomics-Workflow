@@ -29,11 +29,11 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Build the Docker image
-     working-directory: Nextflow
-     if: ${{ github.event_name == 'push' }}
-     run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:dev
-     if: ${{ github.event_name == 'release' }}
-     run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
+      working-directory: Nextflow
+      if: ${{ github.event_name == 'push' }}
+      run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:dev
+      if: ${{ github.event_name == 'release' }}
+      run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
 
     - name: Push Docker image to DockerHub (dev)
       if: ${{ github.event_name == 'push' }}
