@@ -28,10 +28,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build the Docker image
+    - name: Build the Docker image (push)
       working-directory: Nextflow
       if: ${{ github.event_name == 'push' }}
       run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:dev
+
+    - name: Build Docker image (release)
       if: ${{ github.event_name == 'release' }}
       run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
 
