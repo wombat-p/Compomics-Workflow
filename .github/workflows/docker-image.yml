@@ -28,18 +28,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build the Docker image
+    - name: Build the Docker image (push)
       working-directory: Nextflow
+      if: ${{ github.event_name == 'push' }}
       run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:dev
 
+    - name: Build Docker image (release)
+      if: ${{ github.event_name == 'release' || github.event_name == 'pull_request' }}
+      run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
+
     - name: Push Docker image to DockerHub (dev)
+      if: ${{ github.event_name == 'push' ||  github.event_name == 'pull_request' }}
       run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           docker push wombatp/${WORKFLOW}:dev
 
-    - name: Pull docker image
-      run: |
-          docker pull wombatp/${WORKFLOW}:dev
 
     - name: Install Nextflow
       run: |
@@ -74,7 +77,6 @@ jobs:
        if: ${{ github.event_name == 'release' }}
        run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker push wombatp:${WORKFLOW}:latest
           docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${{ github.ref }}
           docker push wombatp:${WORKFLOW}:${{ github.ref }}:latest
 
