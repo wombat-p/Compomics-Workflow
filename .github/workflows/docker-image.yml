@@ -8,6 +8,7 @@ on:
     branches: [ dev ]
   release:
     types: [published]
+    branches: [ releases ]
 
 jobs:
 
@@ -30,11 +31,11 @@ jobs:
 
     - name: Build the Docker image (push)
       working-directory: Nextflow
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
       run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:dev
 
     - name: Build Docker image (release)
-      if: ${{ github.event_name == 'release' || github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'release' }}
       run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
 
     - name: Push Docker image to DockerHub (dev)
