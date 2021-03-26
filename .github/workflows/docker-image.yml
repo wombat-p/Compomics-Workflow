@@ -78,7 +78,7 @@ jobs:
 
      - name: Build new docker image
        working-directory: Nextflow
-       run: docker build --no-cache . -t wombatp:${WORKFLOW}:latest
+       run: docker build --no-cache . -t wombatp/${WORKFLOW}:latest
 
      - name: Push Docker image to DockerHub (release)
        if: ${{ github.event_name == 'release' }}
@@ -87,6 +87,6 @@ jobs:
           version=${{ github.ref }}
           version=(${version//\// })
           version=${version[2]}
-          docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${version}
-          docker push wombatp:${WORKFLOW}:${version}:latest
+          docker tag wombatp/${WORKFLOW}:latest wombatp/${WORKFLOW}:${version}
+          docker push wombatp/${WORKFLOW}:${version}:latest
 
