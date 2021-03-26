@@ -88,5 +88,5 @@ jobs:
           version=(${version//\// })
           version=${version[2]}
           docker tag wombatp/${WORKFLOW}:latest wombatp/${WORKFLOW}:${version}
-          docker push wombatp/${WORKFLOW}:${version}:latest
+          docker push wombatp/${WORKFLOW}:${version}
 
