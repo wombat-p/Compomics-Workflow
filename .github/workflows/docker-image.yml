@@ -38,8 +38,8 @@ jobs:
       if: ${{ github.event_name == 'release' }}
       run: |
           version=${{ github.ref }}
-	  version=(${version//\// })
-	  version=${version[2]}
+	  version=(${ version//\// })
+	  version=${ version[2] }
           docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${version}
 
     - name: Push Docker image to DockerHub (dev)
