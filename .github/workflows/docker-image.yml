@@ -36,7 +36,11 @@ jobs:
 
     - name: Build Docker image (release)
       if: ${{ github.event_name == 'release' }}
-      run: docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${{ github.ref }}
+      run: |
+          version=${{ github.ref }}
+	  version=(${version//\// })
+	  version=${version[2]}
+          docker build . --file Dockerfile --tag wombatp/${WORKFLOW}:${version}
 
     - name: Push Docker image to DockerHub (dev)
       if: ${{ github.event_name == 'push' ||  github.event_name == 'pull_request' }}
@@ -78,6 +82,9 @@ jobs:
        if: ${{ github.event_name == 'release' }}
        run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${{ github.ref }}
-          docker push wombatp:${WORKFLOW}:${{ github.ref }}:latest
+          version=${{ github.ref }}
+	  version=(${version//\// })
+	  version=${version[2]}
+          docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${version}
+          docker push wombatp:${WORKFLOW}:${version}:latest
 
