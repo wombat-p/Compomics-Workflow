@@ -84,8 +84,8 @@ jobs:
        run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           version=${{ github.ref }}
-	  version=(${version//\// })
-	  version=${version[2]}
+          version=(${version//\// })
+          version=${version[2]}
           docker tag wombatp:${WORKFLOW}:latest wombatp:${WORKFLOW}:${version}
           docker push wombatp:${WORKFLOW}:${version}:latest
 
