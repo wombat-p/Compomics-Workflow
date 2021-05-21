@@ -1,4 +1,4 @@
-name: nf-core-moff-labelfree
+name: nf-core-compomics-workflow
 channels:
   - conda-forge
   - bioconda

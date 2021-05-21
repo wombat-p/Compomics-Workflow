@@ -45,12 +45,10 @@ Run the workflow with the following command and parameters after changing _RAWFO
 
 Also adjust the parameter values _max_cpus_ and _max_memory_ to the computing power you have available.
 ```
-nextflow run main.nf --raws 'RAWFOLDER/*.raw' --fasta yeast_UPS.fasta --miscleavages 2 --fragment_mass_tolerance 0.8 \
---precursor_mass_tolerance 5 --enzyme 'Trypsin (no P rule)' --variable_mods 'Oxidation of M,Acetylation of protein N-term' \
---experiment_design pxd001819.txt --max_cpus 8 --max_memory \
-8GB -profile docker -with-report -with-trace -with-timeline
-
-
+nextflow run main.nf --raws 'RAWFOLDER/*.raw' --fasta '../data/yeast_UPS.fasta --miscleavages 2 \
+  --fragment_mass_tolerance 0.8 --precursor_mass_tolerance 5 --enzyme 'Trypsin (no P rule)' \
+  --variable_mods 'Oxidation of M,Acetylation of protein N-term' \
+  --experiment_design '../data/pxd001819.txt' \
+  --max_cpus 8 --max_memory 8GB \
+  -profile docker -with-report -with-trace -with-timeline
 ```
-
-
