@@ -285,8 +285,8 @@ process run_peptideshaker {
         mkdir log    
         unzip ${search_out} searchgui.par
         peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
-        peptide-shaker eu.isas.peptideshaker.cmd.PeptideShakerCLI -spectrum_files "./${mzmlfile}"  -identification_files "./${search_out}"  -id_params searchgui.par \\
-        -fasta_file "${fasta_decoy}" -reference "${params.name}" -out "./${mzmlfile.baseName}.psdb" -threads ${task.cpus} -Xmx${mem}
+        peptide-shaker eu.isas.peptideshaker.cmd.PeptideShakerCLI -spectrum_files "./${mzmlfile}"  -identification_files "./${search_out}"  -id_params ./searchgui.par \\
+        -fasta_file "./${fasta_decoy}" -reference "${params.name}" -out "./${mzmlfile.baseName}.psdb" -threads ${task.cpus} -Xmx${mem}
          """    
 }
 
