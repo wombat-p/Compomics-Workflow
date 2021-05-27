@@ -6,6 +6,8 @@ If you want to build your own docker image, be aware that it needs to be named v
 ## Content
 _Nextflow folder:_ Implementation of workflow
 
+_data folder:_ additional data to run the UPS data set (NOT including the RAW files)
+
 _Results folder:_ Results from the running the UPS data set
 
 ## Getting started
