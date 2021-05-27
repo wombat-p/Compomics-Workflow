@@ -177,7 +177,7 @@ process convert_raw_mzml {
   label 'process_low'
   label 'process_single_thread'
   
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/mzMLs", mode:'copy'
   
   input:
   file rawfile from raws_convert
@@ -198,8 +198,6 @@ process convert_raw_mzml {
 process create_decoy_database {
   label 'process_very_low'
   label 'process_single_thread'
-  
-  publishDir "${params.outdir}"
   
   input:
   file fasta from input_fasta_decoy_database
@@ -224,7 +222,6 @@ process create_searchgui_paramfile {
   label 'process_very_low'
   label 'process_single_thread'
   
-  publishDir "${params.outdir}"
   input:
 
   output:
@@ -249,7 +246,7 @@ process run_searchgui_search{
   label 'process_medium'
   label 'process_dual_threads'
 
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/searchgui", mode:'copy', pattern: '*.zip'
   
   input:
   each file(mzmlfile) from mzmls_searchgui
@@ -279,7 +276,7 @@ process run_searchgui_search{
 process run_peptideshaker {
   label 'process_medium'
   
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/peptideshaker", mode:'copy', pattern: '*.psdb'
   
   input:
   tuple file(search_out), file(mzmlfile) from searchgui_out
@@ -310,7 +307,7 @@ process get_peptideshaker_tsv {
   label 'process_very_low'
   label 'process_single_thread'
   
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/peptideshaker", mode:'copy'
   
   input:
   tuple file(pepshaker), file(mzmlfile) from peptideshaker_file_gettsv
@@ -335,7 +332,7 @@ process flashLFQ_all {
   label 'process_high'
   memory { check_max( 64.GB * task.attempt, 'memory' ) }
   
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/flashLFQ", mode:'copy'
   
   input:
   file peptideshaker_out from peptideshaker_tsv_file_filtered.collect()
@@ -368,7 +365,8 @@ process run_msqrob {
   label 'process_very_low'
   label 'process_single_thread'
   
-  publishDir "${params.outdir}"
+  publishDir "${params.outdir}/msqrob", mode:'copy'
+
   input:
   file exp_design from input_exp_design
   file rawfiles from raws_msqrob.collect()
