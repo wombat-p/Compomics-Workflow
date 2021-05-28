@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-                         nf-core/proline
+                         nf-core/compomics_workflow
 ========================================================================================
  nf-core/compomics_workflow Analysis Pipeline.
 #### Homepage / Documentation
@@ -149,25 +149,24 @@ if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
 /*
  * Create a channel for input raw files
  */
-Channel
-        .fromPath( params.raws ).into {input_raw; input_raw2; input_raw3; input_raw4}
+input_raw = Channel.fromPath( params.raws )
+input_raw.into { raws_convert; raws_msqrob}
 
 /*
  * Create a channel for fasta file
  */
-  Channel
-        .fromPath( params.fasta ).into {input_fasta; input_fasta2; input_fasta3}
-  
-        
+input_fasta = Channel.fromPath( params.fasta )
+input_fasta.into { input_fasta_decoy_database; input_fasta_searchgui; input_fasta_peptideshaker }
+
+
 /* 
  * Create a channel for proline experimental design file
  */
 input_exp_design =  Channel.fromPath(params.experiment_design)
 if (params.experiment_design == "none") {
-    log.warn "No experimental design! All raw files will be considered being from the one and the same experimental condition."
+  log.warn "No experimental design! All raw files will be considered being from the one and the same experimental condition."
 } else if(!(file(params.experiment_design).exists())) {
-        log.error "File with experimental design does not exit"; exit 1
-    
+  log.error "File with experimental design does not exit"; exit 1
 }
 
 
@@ -175,119 +174,129 @@ if (params.experiment_design == "none") {
  * STEP 1 - convert raw files to mzML
  */
 process convert_raw_mzml {
-    publishDir "${params.outdir}"
-    input:
-      file rawfile from input_raw
-    
-    output:
-     file "${rawfile.baseName}.mzML" into (mzmls, mzmls2, mzmls3, mzmls4)
-
-    script:
-     """
-     ThermoRawFileParser.sh -i ${rawfile} -o ./  -f 1
-     """
-
+  label 'process_low'
+  label 'process_single_thread'
+  
+  publishDir "${params.outdir}/mzMLs", mode:'copy'
+  
+  input:
+  file rawfile from raws_convert
+  
+  output:
+  file "${rawfile.baseName}.mzML" into (mzmls_searchgui, mzmls_flashLFQ)
+  
+  script:
+  """
+  ThermoRawFileParser.sh -i ${rawfile} -o ./  -f 1
+  """
 }
+
 
 /*
  * STEP 2 - create  decoy database
  */
 process create_decoy_database {
-    publishDir "${params.outdir}"
-    input:
-      file fasta from input_fasta
-
-    output:
-      file "${fasta.baseName}_concatenated_target_decoy.fasta" into (fasta_with_decoy, fasta_with_decoy2)
-
-    when:
-      !params.skip_decoy_generation
-
-    script:
-     """
-     searchgui eu.isas.searchgui.cmd.FastaCLI -in ${fasta} -decoy
-     """    
-}    
-
+  label 'process_very_low'
+  label 'process_single_thread'
+  
+  input:
+  file fasta from input_fasta_decoy_database
+  
+  output:
+  file "${fasta.baseName}_concatenated_target_decoy.fasta" into (fasta_with_decoy, fasta_with_decoy2)
+  
+  when:
+  !params.skip_decoy_generation
+  
+  script:
+  """
+  searchgui eu.isas.searchgui.cmd.FastaCLI -in ${fasta} -decoy
+  """    
+}
 
 
 /*
  * STEP 3 - create  searchgui parameter file
  */
 process create_searchgui_paramfile {
-    publishDir "${params.outdir}"
-    input:
+  label 'process_very_low'
+  label 'process_single_thread'
+  
+  input:
 
-      
-
-    output:
-      file "searchgui.par" into (searchgui_param, searchgui_param2)
-
-    script:
-     """
-         searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI -prec_tol ${params.precursor_mass_tolerance} -prec_ppm 1 \\
-         -frag_tol ${params.fragment_mass_tolerance} -frag_ppm 0 -enzyme "${params.enzyme}" -mc ${params.miscleavages}  \\
-             -fixed_mods "${params.fixed_mods}" -variable_mods "${params.variable_mods}" -min_charge ${params.min_charge} -max_charge ${params.max_charge} \\
-         -fi "${params.fions}" -ri "${params.rions}" -import_peptide_length_min ${params.peptide_min_length} \\
-         -import_peptide_length_max ${params.peptide_max_length} -xtandem_quick_acetyl 0 -xtandem_quick_pyro 0 \\
-          -out searchgui.par 
-         """    
+  output:
+  file "searchgui.par" into searchgui_param
+  
+  script:
+  """
+  searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI -prec_tol ${params.precursor_mass_tolerance} -prec_ppm 1 \\
+      -frag_tol ${params.fragment_mass_tolerance} -frag_ppm 0 -enzyme "${params.enzyme}" -mc ${params.miscleavages}  \\
+      -fixed_mods "${params.fixed_mods}" -variable_mods "${params.variable_mods}" -min_charge ${params.min_charge} -max_charge ${params.max_charge} \\
+      -fi "${params.fions}" -ri "${params.rions}" -import_peptide_length_min ${params.peptide_min_length} \\
+      -import_peptide_length_max ${params.peptide_max_length} -xtandem_quick_acetyl 0 -xtandem_quick_pyro 0 \\
+      -out searchgui.par 
+  """    
 } 
-
 
 
 /*
  * STEP 4 - run database search
  */
 process run_searchgui_search{
-    publishDir "${params.outdir}"
-    input:
-      each file(mzmlfile) from mzmls
-      file paramfile from searchgui_param
-      file fasta_decoy from fasta_with_decoy.ifEmpty(input_fasta2)      
+  label 'process_medium'
+  label 'process_dual_threads'
 
-    output:
-     tuple file("${mzmlfile.baseName}.zip"), file(mzmlfile) into (searchgui_out)
-
-    script:
-     """
-	# needed for Myrimatch, see https://github.com/compomics/searchgui/issues/245
+  publishDir "${params.outdir}/searchgui", mode:'copy', pattern: '*.zip'
+  
+  input:
+  each file(mzmlfile) from mzmls_searchgui
+  file paramfile from searchgui_param
+  file fasta_decoy from fasta_with_decoy.ifEmpty(input_fasta_searchgui)      
+  
+  output:
+  tuple file("${mzmlfile.baseName}.zip"), file(mzmlfile) into (searchgui_out)
+  
+  script:
+  """
+  # needed for Myrimatch, see https://github.com/compomics/searchgui/issues/245
 	LANG=/usr/lib/locale/en_US
 	export LC_ALL=C; unset LANGUAGE
-        mkdir tmp
-        mkdir log       
-        searchgui eu.isas.searchgui.cmd.PathSettingsCLI -temp_folder ./tmp -log ./log
-         searchgui eu.isas.searchgui.cmd.SearchCLI -spectrum_files ./  -output_folder ./ -fasta_file "./${fasta_decoy}"  -id_params "./${paramfile}" -threads ${task.cpus} \\
-         -xtandem ${params.run_xtandem} -msgf ${params.run_msgf} -comet ${params.run_comet} -ms_amanda ${params.run_ms_amanda} -myrimatch ${params.run_myrimatch}
-         mv searchgui_out.zip ${mzmlfile.baseName}.zip
-
-         """    
+  mkdir tmp
+  mkdir log
+  searchgui eu.isas.searchgui.cmd.PathSettingsCLI -temp_folder ./tmp -log ./log
+  searchgui eu.isas.searchgui.cmd.SearchCLI -spectrum_files ./  -output_folder ./ -fasta_file "./${fasta_decoy}"  -id_params "./${paramfile}" -threads ${task.cpus} \\
+      -xtandem ${params.run_xtandem} -msgf ${params.run_msgf} -comet ${params.run_comet} -ms_amanda ${params.run_ms_amanda} -myrimatch ${params.run_myrimatch}
+  mv searchgui_out.zip ${mzmlfile.baseName}.zip
+  """    
 }
 
 /*
  * STEP 5 - fdr, ... by PeptideShaker
  */
 process run_peptideshaker {
-    publishDir "${params.outdir}"
-    input:
-      tuple file(search_out), file(mzmlfile) from searchgui_out
-      each file(fasta_decoy) from fasta_with_decoy2.ifEmpty(input_fasta3)      
-
-    output:
-      tuple file("${mzmlfile.baseName}.psdb"), file(mzmlfile) into (peptideshaker_file, peptideshaker_file2)
-
-    script:
-    mem = " ${task.memory}"
-    mem = mem.replaceAll(" ","")
-    mem = mem.replaceAll("B","")
-     """
-        mkdir tmp
-        mkdir log    
-        unzip ${search_out} searchgui.par
-        peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
-        peptide-shaker eu.isas.peptideshaker.cmd.PeptideShakerCLI -spectrum_files "./${mzmlfile}"  -identification_files "./${search_out}"  -id_params ./searchgui.par \\
-        -fasta_file "./${fasta_decoy}" -reference "${params.name}" -out "./${mzmlfile.baseName}.psdb" -threads ${task.cpus} -Xmx${mem}
-         """    
+  label 'process_medium'
+  
+  publishDir "${params.outdir}/peptideshaker", mode:'copy', pattern: '*.psdb'
+  
+  input:
+  tuple file(search_out), file(mzmlfile) from searchgui_out
+  each file(fasta_decoy) from fasta_with_decoy2.ifEmpty(input_fasta_peptideshaker)      
+  
+  output:
+  tuple file("${mzmlfile.baseName}.psdb"), file(mzmlfile) into peptideshaker_file_gettsv
+  
+  script:
+  mem = " ${task.memory}"
+  mem = mem.replaceAll(" ","")
+  mem = mem.replaceAll("B","")
+  """
+  mkdir tmp
+  mkdir log    
+  unzip ${search_out} searchgui.par
+  peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
+  peptide-shaker eu.isas.peptideshaker.cmd.PeptideShakerCLI -spectrum_files "./${mzmlfile}"  -identification_files "./${search_out}"  -id_params ./searchgui.par \\
+      -fasta_file "./${fasta_decoy}" -reference "${params.name}" -out "./${mzmlfile.baseName}.psdb" -threads ${task.cpus} -Xmx${mem}
+  """    
 }
 
 /*
@@ -295,95 +304,98 @@ process run_peptideshaker {
  */
 // We might need to add the fasta file as input, as being outside the work folder
 process get_peptideshaker_tsv {
-    publishDir "${params.outdir}"
-    input:
-        tuple file(pepshaker), file(mzmlfile) from peptideshaker_file
-	
-
-    output:
-      file "${mzmlfile.baseName}.txt"  into (peptideshaker_tsv_file)
-      file "${mzmlfile.baseName}_filtered.txt"  into (peptideshaker_tsv_file_filtered)
-
-    script:
-     """
-        peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
-        peptide-shaker eu.isas.peptideshaker.cmd.ReportCLI -in "./${pepshaker}" -out_reports "./" -reports "3,4"
+  label 'process_very_low'
+  label 'process_single_thread'
+  
+  publishDir "${params.outdir}/peptideshaker", mode:'copy'
+  
+  input:
+  tuple file(pepshaker), file(mzmlfile) from peptideshaker_file_gettsv
+  
+  output:
+  file "${mzmlfile.baseName}.txt"  into (peptideshaker_tsv_file)
+  file "${mzmlfile.baseName}_filtered.txt"  into (peptideshaker_tsv_file_filtered)
+  
+  script:
+  """
+  peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
+  peptide-shaker eu.isas.peptideshaker.cmd.ReportCLI -in "./${pepshaker}" -out_reports "./" -reports "3,4"
 	mv "${params.name}_Default_PSM_Report_with_non-validated_matches.txt" "${mzmlfile.baseName}.txt"
 	mv "${params.name}_Default_PSM_Report.txt" "${mzmlfile.baseName}_filtered.txt"
-         """    
+  """    
 }
 
 /*
  * STEP 7 - run flashLFQ for quantification
 */
 process flashLFQ_all {
-    echo true
-    publishDir "${params.outdir}"
-
-    input:
-	file peptideshaker_out from peptideshaker_tsv_file_filtered.collect()
-        file mzmlfiles from mzmls2.collect()
-
-    output:
-//        stdout stdout_channel
-	file "QuantifiedPeaks.tsv" into flashlfq_peaks
-	file "QuantifiedPeptides.tsv" into flashlfq_peptides
-	file "QuantifiedProteins.tsv" into flashlfq_proteins
-
-
-    script:
-        """
-
-       first_line=""
-       for file in *.txt		
-       	   do
-	   echo \$file
-	   tail -n +2 "\$file" >> tlfq_ident.tabular
-	   first_line=\$(head -n1 "\$file")
-        done
-        echo "\$first_line" | cat - tlfq_ident.tabular > lfq_ident.tabular
-        FlashLFQ --idt "lfq_ident.tabular" --rep "./" --out ./ --mbr ${params.mbr} --mrt ${params.max_rt_alignment_shift} --ppm ${params.precursor_mass_tolerance} --thr ${task.cpus}
-        """
+  label 'process_high'
+  memory { check_max( 64.GB * task.attempt, 'memory' ) }
+  
+  publishDir "${params.outdir}/flashLFQ", mode:'copy'
+  
+  input:
+  file peptideshaker_out from peptideshaker_tsv_file_filtered.collect()
+  file mzmlfiles from mzmls_flashLFQ.collect()
+  
+  output:
+  file "QuantifiedPeaks.tsv" into flashlfq_peaks
+  file "QuantifiedPeptides.tsv" into flashlfq_peptides
+  file "QuantifiedProteins.tsv" into flashlfq_proteins
+  
+  script:
+  """
+  first_line=""
+  for file in *.txt		
+  do
+    echo \$file
+    tail -n +2 "\$file" >> tlfq_ident.tabular
+    first_line=\$(head -n1 "\$file")
+  done
+  echo "\$first_line" | cat - tlfq_ident.tabular > lfq_ident.tabular
+  FlashLFQ --idt "lfq_ident.tabular" --rep "./" --out ./ --mbr ${params.mbr} --mrt ${params.max_rt_alignment_shift} --ppm ${params.precursor_mass_tolerance} --thr ${task.cpus}
+  """
 }
+
 
 /*
  * STEP 9 - run MSqRob for stats
 */
 process run_msqrob {
-    publishDir "${params.outdir}"
+  label 'process_very_low'
+  label 'process_single_thread'
+  
+  publishDir "${params.outdir}/msqrob", mode:'copy'
 
-    input:
-      file exp_design from input_exp_design
-      file rawfiles from input_raw4.collect()
-      file quant_tab from flashlfq_peptides
-       
-    output:
-      file "MSqRobOut.csv"  into msqrob_prot_out
-
-    script:
-   // no file provided
-    expdesign_text = "run\tgenotype\tbiorep"
-    if (exp_design.getName() == "none") {
-        if(rawfiles[1] != null) {
-                for( int i=0; i<rawfiles.size(); i++ ) {
-                   biorep = i+1
-                   expdesign_text += "\n${rawfiles[i].getBaseName()}\tMain\tA${biorep}"
-                }
-        } else {
-          expdesign_text += "\n${rawfiles.getBaseName()}\tMain\tA1"
-        }
+  input:
+  file exp_design from input_exp_design
+  file rawfiles from raws_msqrob.collect()
+  file quant_tab from flashlfq_peptides
+  
+  output:
+  file "MSqRobOut.csv"  into msqrob_prot_out
+  
+  script:
+  // no file provided
+  expdesign_text = "run\tgenotype\tbiorep"
+  if (exp_design.getName() == "none") {
+    if (rawfiles[1] != null) {
+      for( int i=0; i<rawfiles.size(); i++ ) {
+        biorep = i+1
+        expdesign_text += "\n${rawfiles[i].getBaseName()}\tMain\tA${biorep}"
+      }
+    } else {
+      expdesign_text += "\n${rawfiles.getBaseName()}\tMain\tA1"
     }
-
-    """
-    echo "${expdesign_text}" > none
-    cp "${exp_design}" exp_design.tsv
-    mv "${quant_tab}" q_input.txt
-    Rscript $baseDir/runMSqRob.R
-    """
-
+  }
+  
+  """
+  echo "${expdesign_text}" > none
+  cp "${exp_design}" exp_design.tsv
+  mv "${quant_tab}" q_input.txt
+  Rscript $baseDir/scripts/runMSqRob.R
+  """
  }
-
-
 
 
 /*
@@ -415,5 +427,3 @@ process run_polystest {
 workflow.onComplete {
     log.info ( workflow.success ? "\nDone! Open the files in the following folder --> $params.outdir\n" : "Oops .. something went wrong" )
 }
-
-       

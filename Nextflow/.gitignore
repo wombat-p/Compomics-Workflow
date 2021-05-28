@@ -1,0 +1,10 @@
+.nextflow*
+.nextflow/
+dag.dot*
+data_test/
+report.html*
+work/
+results/
+timeline.html*
+trace.txt*
+none
