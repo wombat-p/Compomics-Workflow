@@ -38,13 +38,12 @@ jobs:
 
     - name: Install Nextflow
       run: |
+          export NXF_VER=${{ matrix.nxf_ver }}
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
     - name: Run pipeline with test data
       working-directory: Nextflow
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
       run: |
           nextflow run main.nf -profile test,docker
 
