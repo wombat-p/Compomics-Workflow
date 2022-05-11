@@ -9,6 +9,9 @@ TODO https://github.com/nf-core/compomics
 ----------------------------------------------------------------------------------------
 */
 
+nextflow.enable.dsl=1
+import groovy.json.JsonOutput
+	
 
 def helpMessage() {
     log.info nfcoreHeader()
@@ -156,13 +159,14 @@ input_raw.into { raws_convert; raws_msqrob}
  * Create a channel for fasta file
  */
 input_fasta = Channel.fromPath( params.fasta )
-input_fasta.into { input_fasta_decoy_database; input_fasta_searchgui; input_fasta_peptideshaker }
+input_fasta.into { input_fasta_decoy_database; input_fasta_searchgui; input_fasta_peptideshaker; input_fasta_qc }
 
 
 /* 
- * Create a channel for proline experimental design file
+ * Create a channel for experimental design file
  */
-input_exp_design =  Channel.fromPath(params.experiment_design)
+exp_design =  Channel.fromPath(params.experiment_design)
+exp_design.into { input_exp_design2; input_exp_design }
 if (params.experiment_design == "none") {
   log.warn "No experimental design! All raw files will be considered being from the one and the same experimental condition."
 } else if(!(file(params.experiment_design).exists())) {
@@ -314,14 +318,19 @@ process get_peptideshaker_tsv {
   
   output:
   file "${mzmlfile.baseName}.txt"  into (peptideshaker_tsv_file)
+  file "${mzmlfile.baseName}_peptides.txt"  into (peptideshaker_peptide_file)
+  file "${mzmlfile.baseName}_proteins.txt"  into (peptideshaker_protein_file)
   file "${mzmlfile.baseName}_filtered.txt"  into (peptideshaker_tsv_file_filtered)
   
   script:
   """
   peptide-shaker eu.isas.peptideshaker.cmd.PathSettingsCLI  -temp_folder ./tmp -log ./log
-  peptide-shaker eu.isas.peptideshaker.cmd.ReportCLI -in "./${pepshaker}" -out_reports "./" -reports "3,4"
+  peptide-shaker eu.isas.peptideshaker.cmd.ReportCLI -in "./${pepshaker}" -out_reports "./" -reports "3,4,6,9"
 	mv "${params.name}_Default_PSM_Report_with_non-validated_matches.txt" "${mzmlfile.baseName}.txt"
 	mv "${params.name}_Default_PSM_Report.txt" "${mzmlfile.baseName}_filtered.txt"
+	mv "${params.name}_Default_Peptide_Report.txt" "${mzmlfile.baseName}_peptides.txt"
+	mv "${params.name}_Default_Protein_Report.txt" "${mzmlfile.baseName}_proteins.txt"
+
   """    
 }
 
@@ -371,13 +380,20 @@ process run_msqrob {
   file exp_design from input_exp_design
   file rawfiles from raws_msqrob.collect()
   file quant_tab from flashlfq_peptides
+  file quant_prot_tab from flashlfq_proteins
+  file pep_file from peptideshaker_peptide_file.collect()
+  file prot_file from peptideshaker_protein_file.collect()
   
   output:
   file "MSqRobOut.csv"  into msqrob_prot_out
+  file "stand_prot_quant_merged.csv" into stdprotquant
+  file "stand_pep_quant_merged.csv" into stdpepquant
+  file "exp_design.txt" into exp_design_final
+  
   
   script:
   // no file provided
-  expdesign_text = "run\tgenotype\tbiorep"
+  expdesign_text = "raw_file\texp_condition\tbiorep"
   if (exp_design.getName() == "none") {
     if (rawfiles[1] != null) {
       for( int i=0; i<rawfiles.size(); i++ ) {
@@ -391,38 +407,45 @@ process run_msqrob {
   
   """
   echo "${expdesign_text}" > none
-  cp "${exp_design}" exp_design.tsv
+  cp "${exp_design}" exp_design.txt
   mv "${quant_tab}" q_input.txt
+  mv "${quant_prot_tab}" q_prot.txt
   Rscript $baseDir/scripts/runMSqRob.R
   """
  }
 
 
 /*
- * STEP 9 - run PolySTest for stats
-
-process run_polystest {
-    publishDir "${params.outdir}"
-
-    input:
-      file exp_design from input_exp_design
-      file moff_res from mbr_output
-       
-    output:
-      file "polystest_prot_res.csv"  into polystest_prot_out
-      file "polystest_pep_res.csv"  into polystest_pep_out
-
-    script:
-    """
-    convertFromProline.R "${exp_design}" "${moff_res}"
-    sed -i "s/threads: 2/threads: ${task.cpus}/g" pep_param.yml
-    sed -i "s/threads: 2/threads: ${task.cpus}/g" prot_param.yml
-    runPolySTestCLI.R pep_param.yml
-    runPolySTestCLI.R prot_param.yml    
-    """
-
- }
+ * STEP 10 - Some QC
 */
+process run_final_qc {
+  label 'process_medium'
+  label 'process_single_thread'
+  
+  publishDir "${params.outdir}/", mode:'copy'
+  
+    input:
+        val foo from JsonOutput.prettyPrint(JsonOutput.toJson(params))
+        file exp_design_file from input_exp_design2
+        file std_prot_file from stdprotquant
+        file std_pep_file from stdpepquant
+        file fasta_file from input_fasta_qc
+	file exp_design_file from exp_design_final
+ 
+  output:
+   file "params.json" into parameters
+   file "benchmarks.json" into benchmarks
+  
+  script:
+  """
+  echo '$foo' > params.json
+  cp "${fasta_file}" database.fasta
+  Rscript $baseDir/scripts/CalcBenchmarks.R
+
+  """
+}
+
+
 
 workflow.onComplete {
     log.info ( workflow.success ? "\nDone! Open the files in the following folder --> $params.outdir\n" : "Oops .. something went wrong" )

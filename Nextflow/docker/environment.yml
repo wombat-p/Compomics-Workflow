@@ -19,4 +19,5 @@ dependencies:
   - libopenblas=0.3.3
   - bioconductor-msnbase=2.16.1
   - r-msqrob=0.7.7
+  - r-matrixstats=0.62.0
   
