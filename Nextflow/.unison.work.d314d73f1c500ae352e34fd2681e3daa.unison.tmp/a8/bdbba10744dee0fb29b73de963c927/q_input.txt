@@ -1,1 +1,0 @@
-/home/veits/devel/Bioinformatics/ELIXIR_EDAM/WOMBAT-P/Compomics-Workflow/Nextflow/work/b9/8b997a293f748bce0cb0d765c10af8/QuantifiedPeptides.tsv
