@@ -1,7 +1,7 @@
 library(MSnbase)
 library(MSqRob)
 options(stringsAsFactors=T)
-peptides <- MSqRob::read2MSnSet("q_input.txt",pattern="Intensity_")
+peptides <- read2MSnSet("q_input.txt",pattern="Intensity_")
 #head(exprs(peptides))
 exp_annotation <- read.csv("exp_design.txt",sep="\t")
 exp_annotation$genotype <- make.names(exp_annotation$exp_condition)

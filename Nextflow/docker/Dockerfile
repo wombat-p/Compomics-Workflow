@@ -4,6 +4,8 @@ LABEL authors="Veit Schwaemmle" \
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a;
+# conda package is outdated, therefore direct install
+#RUN /opt/conda/envs/nf-core-compomics-workflow/bin/R -e 'install.packages("MSqRob", repos = "http://cran.us.r-project.org")'
 
 ENV PATH /opt/conda/envs/nf-core-compomics-workflow/bin:$PATH
 

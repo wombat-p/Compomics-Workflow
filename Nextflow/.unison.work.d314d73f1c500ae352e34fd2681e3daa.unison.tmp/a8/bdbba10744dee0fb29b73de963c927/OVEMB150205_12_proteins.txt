@@ -1,0 +1,1 @@
+/home/veits/devel/Bioinformatics/ELIXIR_EDAM/WOMBAT-P/Compomics-Workflow/Nextflow/work/20/387832a794e5b737a656eee79e05b0/OVEMB150205_12_proteins.txt

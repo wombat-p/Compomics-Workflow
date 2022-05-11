@@ -1,0 +1,21 @@
+{
+  "fastaFile": {
+    "path": "/home/veits/devel/Bioinformatics/ELIXIR_EDAM/WOMBAT-P/Compomics-Workflow/Nextflow/work/ed/f17eea43c815066548009805aa8fa3/./ABRF_iPRG_2012_target_concatenated_target_decoy.fasta"
+  },
+  "speciesOccurrence": {
+    "Bos taurus": 2,
+    "Homo sapiens": 71592,
+    "Homo sapiens_REVERSED": 22,
+    "Saccharomyces cerevisiae (strain ATCC 204508 / S288c)": 13282,
+    "Sus scrofa": 2
+  },
+  "databaseType": {
+    "UniProt": 84900
+  },
+  "nSequences": 84900,
+  "nTarget": 42450,
+  "lastModified": 1652276852774,
+  "name": "ABRF_iPRG_2012_target_concatenated_target_decoy",
+  "description": "/home/veits/devel/Bioinformatics/ELIXIR_EDAM/WOMBAT-P/Compomics-Workflow/Nextflow/work/ed/f17eea43c815066548009805aa8fa3/./ABRF_iPRG_2012_target_concatenated_target_decoy.fasta",
+  "version": "Wed May 11 13:47:32 UTC 2022"
+}
