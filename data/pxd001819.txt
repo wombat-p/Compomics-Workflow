@@ -1,4 +1,4 @@
-run	genotype	biorep
+raw_file	exp_condition	biorep
 UPS1_125amol_R2	125amol	2
 UPS1_2500amol_R2	2500amol	2
 UPS1_50000amol_R2	50000amol	2
