@@ -35,6 +35,7 @@ L <- makeContrast(contrasts=contrasts,levels=as.character(levels))
 result <- test.protLMcontrast(protLM, L)
 result <- prot.p.adjust(result, method="fdr")
 write.csv(result, "MSqRobOut.csv")
+result <- as.data.frame(result)
 
 ## Merging more data from peptide and protein level
 all_peptides <- list()
