@@ -4,12 +4,17 @@
                          nf-core/compomics_workflow
 ========================================================================================
  nf-core/compomics_workflow Analysis Pipeline.
+
+nextflow.enable.dsl=1
+
+
 #### Homepage / Documentation
+
+
 TODO https://github.com/nf-core/compomics
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl=1
 import groovy.json.JsonOutput
 	
 
