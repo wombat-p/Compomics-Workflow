@@ -3,7 +3,8 @@ LABEL authors="Veit Schwaemmle" \
       description="Docker image containing all requirements for nf-core-compomics"
 
 COPY environment.yml /
-RUN conda env create -f /environment.yml && conda clean -a;
+RUN conda install mamba -n base -c conda-forge
+RUN mamba env create -f /environment.yml && conda clean -a;
 # conda package is outdated, therefore direct install
 #RUN /opt/conda/envs/nf-core-compomics-workflow/bin/R -e 'install.packages("MSqRob", repos = "http://cran.us.r-project.org")'
 

@@ -11,7 +11,8 @@ for (c in 1:ncol(exp_annotation)) {
 }
 
 ## Running MSqRob
-peptides <- preprocess_MSnSet(peptides,accession="Protein.Groups",split=",", useful_properties="Sequence", exp_annotation=exp_annotation)
+# Had to change normalization due to error in preprocesscore
+peptides <- preprocess_MSnSet(peptides,accession="Protein.Groups",split=",", useful_properties="Sequence", exp_annotation=exp_annotation, normalisation="center.median")
 
 # necessary due to change to R 4.x    
 fData(peptides)[,"Protein.Groups"] <- as.factor(fData(peptides)[,"Protein.Groups"])
