@@ -1,0 +1,310 @@
+<!doctype html>
+<!--
+  ~ Copyright 2013-2019, Centre for Genomic Regulation (CRG)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Cscript src='" + prot + "code.jquery.com/jquery-latest.min.js' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "d3js.org/d3.v3.min.js' charset='utf-8' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "cdn.rawgit.com/nextflow-io/d3-timeline/82622c4cc35bac7283b3a317826b0709ac1ae476/src/d3-timeline.js' type='text/javascript' %3E%3C/script%3E"));
+</script>
+<style type="text/css">
+* {
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.axis path,
+.axis line {
+fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-size: 10px;
+}
+
+div#timeline g text {
+  font-size: 13px;
+}
+
+text.timeline-label {
+  font-size: 13px;
+}
+
+#timeline2 .axis {
+  transform: translate(0px,30px);
+  -ms-transform: translate(0px,30px); /* IE 9 */
+  -webkit-transform: translate(0px,30px); /* Safari and Chrome */
+  -o-transform: translate(0px,30px); /* Opera */
+  -moz-transform: translate(0px,30px); /* Firefox */
+}
+
+.coloredDiv {
+  height:20px; width:20px; float:left;
+}
+
+#footer {
+  padding-top: 3em; color: #bfbfbf; font-size: 13px;
+}
+
+#footer a:visited {
+  color: #bfbfbf;
+  text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+var handler=null;
+// see https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20c
+var colors = d3.scale.category20c().domain(d3.range(0,20)).range()
+
+function c0(index) { return "#9c9c9c"; }
+function c1(index) { return "#bdbdbd"; }
+function c2(index) { return colors[index % 16]; } // <-- note: uses only the first 16 colors
+
+var elapsed="2h 52m 18s"
+var beginningMillis=1610354459911;
+var endingMillis=1610377593921;
+var data=[
+{"label": "convert_raw_mzml (12)", "times": [{"starting_time": 1610354460067, "ending_time": 1610354460155, "color":c1(0)}, {"starting_time": 1610354460155, "ending_time": 1610354828269, "color":c0(0), "label": "6m 11s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354828269, "ending_time": 1610354831409, "color":c1(0)}]},
+{"label": "convert_raw_mzml (8)", "times": [{"starting_time": 1610354459960, "ending_time": 1610354460056, "color":c1(0)}, {"starting_time": 1610354460056, "ending_time": 1610354822375, "color":c0(0), "label": "6m 5s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354822375, "ending_time": 1610354824629, "color":c1(0)}]},
+{"label": "convert_raw_mzml (1)", "times": [{"starting_time": 1610354460072, "ending_time": 1610354460156, "color":c1(0)}, {"starting_time": 1610354460156, "ending_time": 1610354826359, "color":c0(0), "label": "6m 9s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354826359, "ending_time": 1610354829081, "color":c1(0)}]},
+{"label": "convert_raw_mzml (14)", "times": [{"starting_time": 1610354460078, "ending_time": 1610354460157, "color":c1(0)}, {"starting_time": 1610354460157, "ending_time": 1610354818642, "color":c0(0), "label": "6m 3s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354818642, "ending_time": 1610354822715, "color":c1(0)}]},
+{"label": "convert_raw_mzml (4)", "times": [{"starting_time": 1610354459967, "ending_time": 1610354460057, "color":c1(0)}, {"starting_time": 1610354460057, "ending_time": 1610354814696, "color":c0(0), "label": "5m 57s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354814696, "ending_time": 1610354817436, "color":c1(0)}]},
+{"label": "convert_raw_mzml (24)", "times": [{"starting_time": 1610354459986, "ending_time": 1610354460060, "color":c1(0)}, {"starting_time": 1610354460060, "ending_time": 1610354826817, "color":c0(0), "label": "6m 10s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354826817, "ending_time": 1610354829538, "color":c1(0)}]},
+{"label": "convert_raw_mzml (5)", "times": [{"starting_time": 1610354460017, "ending_time": 1610354460062, "color":c1(0)}, {"starting_time": 1610354460062, "ending_time": 1610354810482, "color":c0(0), "label": "5m 55s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354810482, "ending_time": 1610354814532, "color":c1(0)}]},
+{"label": "convert_raw_mzml (16)", "times": [{"starting_time": 1610354818450, "ending_time": 1610354818544, "color":c1(0)}, {"starting_time": 1610354818544, "ending_time": 1610355110670, "color":c0(0), "label": "4m 54s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610355110670, "ending_time": 1610355112049, "color":c1(0)}]},
+{"label": "convert_raw_mzml (22)", "times": [{"starting_time": 1610354460053, "ending_time": 1610354460153, "color":c1(0)}, {"starting_time": 1610354460153, "ending_time": 1610354817634, "color":c0(0), "label": "6m 2s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354817634, "ending_time": 1610354821913, "color":c1(0)}]},
+{"label": "convert_raw_mzml (23)", "times": [{"starting_time": 1610354459948, "ending_time": 1610354459969, "color":c1(0)}, {"starting_time": 1610354459969, "ending_time": 1610354818752, "color":c0(0), "label": "6m 1s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354818752, "ending_time": 1610354821337, "color":c1(0)}]},
+{"label": "convert_raw_mzml (11)", "times": [{"starting_time": 1610354460027, "ending_time": 1610354460063, "color":c1(0)}, {"starting_time": 1610354460063, "ending_time": 1610354825437, "color":c0(0), "label": "6m 8s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354825437, "ending_time": 1610354828197, "color":c1(0)}]},
+{"label": "convert_raw_mzml (2)", "times": [{"starting_time": 1610354459920, "ending_time": 1610354459960, "color":c1(0)}, {"starting_time": 1610354459960, "ending_time": 1610354819624, "color":c0(0), "label": "6m 2s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354819624, "ending_time": 1610354821962, "color":c1(0)}]},
+{"label": "convert_raw_mzml (15)", "times": [{"starting_time": 1610354459993, "ending_time": 1610354460061, "color":c1(0)}, {"starting_time": 1610354460061, "ending_time": 1610354811937, "color":c0(0), "label": "5m 56s \/ 1.7 GB \/ CACHED"}, {"starting_time": 1610354811937, "ending_time": 1610354815659, "color":c1(0)}]},
+{"label": "convert_raw_mzml (3)", "times": [{"starting_time": 1610354815665, "ending_time": 1610354815759, "color":c1(0)}, {"starting_time": 1610354815759, "ending_time": 1610355111848, "color":c0(0), "label": "4m 57s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610355111848, "ending_time": 1610355113125, "color":c1(0)}]},
+{"label": "convert_raw_mzml (19)", "times": [{"starting_time": 1610354459941, "ending_time": 1610354459966, "color":c1(0)}, {"starting_time": 1610354459966, "ending_time": 1610354816529, "color":c0(0), "label": "5m 59s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354816529, "ending_time": 1610354818444, "color":c1(0)}]},
+{"label": "convert_raw_mzml (17)", "times": [{"starting_time": 1610354460061, "ending_time": 1610354460155, "color":c1(0)}, {"starting_time": 1610354460155, "ending_time": 1610354823438, "color":c0(0), "label": "6m 6s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354823438, "ending_time": 1610354826437, "color":c1(0)}]},
+{"label": "convert_raw_mzml (20)", "times": [{"starting_time": 1610354460046, "ending_time": 1610354460067, "color":c1(0)}, {"starting_time": 1610354460067, "ending_time": 1610354831746, "color":c0(0), "label": "6m 15s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354831746, "ending_time": 1610354835031, "color":c1(0)}]},
+{"label": "convert_raw_mzml (27)", "times": [{"starting_time": 1610354814546, "ending_time": 1610354814632, "color":c1(0)}, {"starting_time": 1610354814632, "ending_time": 1610355114255, "color":c0(0), "label": "5m 1s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610355114255, "ending_time": 1610355115611, "color":c1(0)}]},
+{"label": "convert_raw_mzml (7)", "times": [{"starting_time": 1610354820751, "ending_time": 1610354820844, "color":c1(0)}, {"starting_time": 1610354820844, "ending_time": 1610355123252, "color":c0(0), "label": "5m 5s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610355123252, "ending_time": 1610355125496, "color":c1(0)}]},
+{"label": "convert_raw_mzml (6)", "times": [{"starting_time": 1610354459954, "ending_time": 1610354460053, "color":c1(0)}, {"starting_time": 1610354460053, "ending_time": 1610354821601, "color":c0(0), "label": "6m 4s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354821601, "ending_time": 1610354823585, "color":c1(0)}]},
+{"label": "create_decoy_database (1)", "times": [{"starting_time": 1610354817441, "ending_time": 1610354817535, "color":c1(1)}, {"starting_time": 1610354817535, "ending_time": 1610354819160, "color":c0(1), "label": "3.3s \/ 203.1 MB \/ CACHED"}, {"starting_time": 1610354819160, "ending_time": 1610354820743, "color":c1(1)}]},
+{"label": "convert_raw_mzml (18)", "times": [{"starting_time": 1610354460037, "ending_time": 1610354460065, "color":c1(0)}, {"starting_time": 1610354460065, "ending_time": 1610354818124, "color":c0(0), "label": "6m 2s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354818124, "ending_time": 1610354822325, "color":c1(0)}]},
+{"label": "convert_raw_mzml (9)", "times": [{"starting_time": 1610354459911, "ending_time": 1610354459954, "color":c1(0)}, {"starting_time": 1610354459954, "ending_time": 1610354820870, "color":c0(0), "label": "6m 3s \/ 1.7 GB \/ CACHED"}, {"starting_time": 1610354820870, "ending_time": 1610354822760, "color":c1(0)}]},
+{"label": "convert_raw_mzml (10)", "times": [{"starting_time": 1610354459979, "ending_time": 1610354460059, "color":c1(0)}, {"starting_time": 1610354460059, "ending_time": 1610354825982, "color":c0(0), "label": "6m 9s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354825982, "ending_time": 1610354828560, "color":c1(0)}]},
+{"label": "convert_raw_mzml (26)", "times": [{"starting_time": 1610354459929, "ending_time": 1610354459962, "color":c1(0)}, {"starting_time": 1610354459962, "ending_time": 1610354826064, "color":c0(0), "label": "6m 8s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354826064, "ending_time": 1610354827716, "color":c1(0)}]},
+{"label": "convert_raw_mzml (13)", "times": [{"starting_time": 1610354459974, "ending_time": 1610354460058, "color":c1(0)}, {"starting_time": 1610354460058, "ending_time": 1610354820933, "color":c0(0), "label": "6m 3s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354820933, "ending_time": 1610354823214, "color":c1(0)}]},
+{"label": "convert_raw_mzml (25)", "times": [{"starting_time": 1610354459936, "ending_time": 1610354459964, "color":c1(0)}, {"starting_time": 1610354459964, "ending_time": 1610354827244, "color":c0(0), "label": "6m 10s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354827244, "ending_time": 1610354829454, "color":c1(0)}]},
+{"label": "convert_raw_mzml (21)", "times": [{"starting_time": 1610354460083, "ending_time": 1610354460157, "color":c1(0)}, {"starting_time": 1610354460157, "ending_time": 1610354830591, "color":c0(0), "label": "6m 14s \/ 1.8 GB \/ CACHED"}, {"starting_time": 1610354830591, "ending_time": 1610354834431, "color":c1(0)}]},
+{"label": "create_searchgui_paramfile", "times": [{"starting_time": 1610367257582, "ending_time": 1610367257626, "color":c1(2)}, {"starting_time": 1610367257626, "ending_time": 1610367258558, "color":c2(2), "label": "2.3s \/ 12.1 MB"}, {"starting_time": 1610367258558, "ending_time": 1610367259877, "color":c1(2)}]},
+{"label": "run_searchgui_search (2)", "times": [{"starting_time": 1610367259988, "ending_time": 1610367260078, "color":c1(3)}, {"starting_time": 1610367260078, "ending_time": 1610370183972, "color":c2(3), "label": "48m 46s \/ 1.3 GB"}, {"starting_time": 1610370183972, "ending_time": 1610370185560, "color":c1(3)}]},
+{"label": "run_searchgui_search (24)", "times": [{"starting_time": 1610367259996, "ending_time": 1610367260081, "color":c1(3)}, {"starting_time": 1610367260081, "ending_time": 1610370230429, "color":c2(3), "label": "49m 32s \/ 1.3 GB"}, {"starting_time": 1610370230429, "ending_time": 1610370232123, "color":c1(3)}]},
+{"label": "run_searchgui_search (3)", "times": [{"starting_time": 1610367260003, "ending_time": 1610367260082, "color":c1(3)}, {"starting_time": 1610367260082, "ending_time": 1610370246802, "color":c2(3), "label": "49m 49s \/ 1.3 GB"}, {"starting_time": 1610370246802, "ending_time": 1610370248694, "color":c1(3)}]},
+{"label": "run_searchgui_search (9)", "times": [{"starting_time": 1610367260009, "ending_time": 1610367260084, "color":c1(3)}, {"starting_time": 1610367260084, "ending_time": 1610370182159, "color":c2(3), "label": "48m 44s \/ 1.3 GB"}, {"starting_time": 1610370182159, "ending_time": 1610370183934, "color":c1(3)}]},
+{"label": "run_searchgui_search (11)", "times": [{"starting_time": 1610367260016, "ending_time": 1610367260086, "color":c1(3)}, {"starting_time": 1610367260086, "ending_time": 1610370287402, "color":c2(3), "label": "50m 30s \/ 1.3 GB"}, {"starting_time": 1610370287402, "ending_time": 1610370289520, "color":c1(3)}]},
+{"label": "run_searchgui_search (13)", "times": [{"starting_time": 1610367260023, "ending_time": 1610367260087, "color":c1(3)}, {"starting_time": 1610367260087, "ending_time": 1610370213416, "color":c2(3), "label": "49m 16s \/ 1.3 GB"}, {"starting_time": 1610370213416, "ending_time": 1610370215897, "color":c1(3)}]},
+{"label": "run_searchgui_search (19)", "times": [{"starting_time": 1610367260029, "ending_time": 1610367260089, "color":c1(3)}, {"starting_time": 1610367260089, "ending_time": 1610370158161, "color":c2(3), "label": "48m 21s \/ 1.3 GB"}, {"starting_time": 1610370158161, "ending_time": 1610370160593, "color":c1(3)}]},
+{"label": "run_searchgui_search (25)", "times": [{"starting_time": 1610367260043, "ending_time": 1610367260091, "color":c1(3)}, {"starting_time": 1610367260091, "ending_time": 1610370191166, "color":c2(3), "label": "48m 53s \/ 1.3 GB"}, {"starting_time": 1610370191166, "ending_time": 1610370193474, "color":c1(3)}]},
+{"label": "run_searchgui_search (7)", "times": [{"starting_time": 1610367260051, "ending_time": 1610367260092, "color":c1(3)}, {"starting_time": 1610367260092, "ending_time": 1610370150996, "color":c2(3), "label": "48m 14s \/ 1.2 GB"}, {"starting_time": 1610370150996, "ending_time": 1610370153650, "color":c1(3)}]},
+{"label": "run_searchgui_search (4)", "times": [{"starting_time": 1610367260059, "ending_time": 1610367260094, "color":c1(3)}, {"starting_time": 1610367260094, "ending_time": 1610370123134, "color":c2(3), "label": "47m 45s \/ 1.2 GB"}, {"starting_time": 1610370123134, "ending_time": 1610370125436, "color":c1(3)}]},
+{"label": "run_searchgui_search (23)", "times": [{"starting_time": 1610367260067, "ending_time": 1610367260095, "color":c1(3)}, {"starting_time": 1610367260095, "ending_time": 1610370134437, "color":c2(3), "label": "47m 57s \/ 1.3 GB"}, {"starting_time": 1610370134437, "ending_time": 1610370136644, "color":c1(3)}]},
+{"label": "run_searchgui_search (15)", "times": [{"starting_time": 1610367260075, "ending_time": 1610367260097, "color":c1(3)}, {"starting_time": 1610367260097, "ending_time": 1610370148922, "color":c2(3), "label": "48m 12s \/ 1.3 GB"}, {"starting_time": 1610370148922, "ending_time": 1610370151992, "color":c1(3)}]},
+{"label": "run_searchgui_search (10)", "times": [{"starting_time": 1610367260084, "ending_time": 1610367260177, "color":c1(3)}, {"starting_time": 1610367260177, "ending_time": 1610370220172, "color":c2(3), "label": "49m 23s \/ 1.3 GB"}, {"starting_time": 1610370220172, "ending_time": 1610370223116, "color":c1(3)}]},
+{"label": "run_searchgui_search (16)", "times": [{"starting_time": 1610367260095, "ending_time": 1610367260179, "color":c1(3)}, {"starting_time": 1610367260179, "ending_time": 1610370142158, "color":c2(3), "label": "48m 5s \/ 1.3 GB"}, {"starting_time": 1610370142158, "ending_time": 1610370145012, "color":c1(3)}]},
+{"label": "run_searchgui_search (8)", "times": [{"starting_time": 1610367260108, "ending_time": 1610367260180, "color":c1(3)}, {"starting_time": 1610367260180, "ending_time": 1610370223733, "color":c2(3), "label": "49m 27s \/ 1.3 GB"}, {"starting_time": 1610370223733, "ending_time": 1610370227129, "color":c1(3)}]},
+{"label": "run_searchgui_search (12)", "times": [{"starting_time": 1610367260114, "ending_time": 1610367260181, "color":c1(3)}, {"starting_time": 1610367260181, "ending_time": 1610370219351, "color":c2(3), "label": "49m 23s \/ 1.3 GB"}, {"starting_time": 1610370219351, "ending_time": 1610370222958, "color":c1(3)}]},
+{"label": "run_searchgui_search (22)", "times": [{"starting_time": 1610367260121, "ending_time": 1610367260181, "color":c1(3)}, {"starting_time": 1610367260181, "ending_time": 1610370190106, "color":c2(3), "label": "48m 54s \/ 1.3 GB"}, {"starting_time": 1610370190106, "ending_time": 1610370193781, "color":c1(3)}]},
+{"label": "run_searchgui_search (17)", "times": [{"starting_time": 1610367260127, "ending_time": 1610367260182, "color":c1(3)}, {"starting_time": 1610367260182, "ending_time": 1610370227385, "color":c2(3), "label": "49m 30s \/ 1.3 GB"}, {"starting_time": 1610370227385, "ending_time": 1610370230588, "color":c1(3)}]},
+{"label": "run_searchgui_search (26)", "times": [{"starting_time": 1610367260132, "ending_time": 1610367260183, "color":c1(3)}, {"starting_time": 1610367260183, "ending_time": 1610370205103, "color":c2(3), "label": "49m 9s \/ 1.3 GB"}, {"starting_time": 1610370205103, "ending_time": 1610370209329, "color":c1(3)}]},
+{"label": "run_searchgui_search (21)", "times": [{"starting_time": 1610367260137, "ending_time": 1610367260184, "color":c1(3)}, {"starting_time": 1610367260184, "ending_time": 1610370193161, "color":c2(3), "label": "48m 57s \/ 1.3 GB"}, {"starting_time": 1610370193161, "ending_time": 1610370197090, "color":c1(3)}]},
+{"label": "run_searchgui_search (20)", "times": [{"starting_time": 1610367260144, "ending_time": 1610367260185, "color":c1(3)}, {"starting_time": 1610367260185, "ending_time": 1610370201711, "color":c2(3), "label": "49m 6s \/ 1.3 GB"}, {"starting_time": 1610370201711, "ending_time": 1610370206023, "color":c1(3)}]},
+{"label": "run_searchgui_search (27)", "times": [{"starting_time": 1610367260150, "ending_time": 1610367260185, "color":c1(3)}, {"starting_time": 1610367260185, "ending_time": 1610370319533, "color":c2(3), "label": "51m 4s \/ 1.3 GB"}, {"starting_time": 1610370319533, "ending_time": 1610370323885, "color":c1(3)}]},
+{"label": "run_searchgui_search (5)", "times": [{"starting_time": 1610367260156, "ending_time": 1610367260186, "color":c1(3)}, {"starting_time": 1610367260186, "ending_time": 1610370185231, "color":c2(3), "label": "48m 49s \/ 1.3 GB"}, {"starting_time": 1610370185231, "ending_time": 1610370188985, "color":c1(3)}]},
+{"label": "run_searchgui_search (1)", "times": [{"starting_time": 1610370125449, "ending_time": 1610370125536, "color":c1(3)}, {"starting_time": 1610370125536, "ending_time": 1610372884843, "color":c2(3), "label": "46m 1s \/ 1.3 GB"}, {"starting_time": 1610372884843, "ending_time": 1610372886181, "color":c1(3)}]},
+{"label": "run_searchgui_search (14)", "times": [{"starting_time": 1610370136651, "ending_time": 1610370136744, "color":c1(3)}, {"starting_time": 1610370136744, "ending_time": 1610372960215, "color":c2(3), "label": "47m 5s \/ 1.3 GB"}, {"starting_time": 1610372960215, "ending_time": 1610372961434, "color":c1(3)}]},
+{"label": "run_searchgui_search (18)", "times": [{"starting_time": 1610370145024, "ending_time": 1610370145112, "color":c1(3)}, {"starting_time": 1610370145112, "ending_time": 1610372973553, "color":c2(3), "label": "47m 10s \/ 1.3 GB"}, {"starting_time": 1610372973553, "ending_time": 1610372974857, "color":c1(3)}]},
+{"label": "run_searchgui_search (6)", "times": [{"starting_time": 1610370152001, "ending_time": 1610370152092, "color":c1(3)}, {"starting_time": 1610370152092, "ending_time": 1610372898046, "color":c2(3), "label": "45m 47s \/ 1.3 GB"}, {"starting_time": 1610372898046, "ending_time": 1610372899377, "color":c1(3)}]},
+{"label": "run_peptideshaker (1)", "times": [{"starting_time": 1610370153656, "ending_time": 1610370153749, "color":c1(4)}, {"starting_time": 1610370153749, "ending_time": 1610370496443, "color":c2(4), "label": "5m 47s \/ 923.4 MB"}, {"starting_time": 1610370496443, "ending_time": 1610370500649, "color":c1(4)}]},
+{"label": "run_peptideshaker (2)", "times": [{"starting_time": 1610370160599, "ending_time": 1610370160693, "color":c1(4)}, {"starting_time": 1610370160693, "ending_time": 1610370512643, "color":c2(4), "label": "5m 55s \/ 1.1 GB"}, {"starting_time": 1610370512643, "ending_time": 1610370515999, "color":c1(4)}]},
+{"label": "run_peptideshaker (3)", "times": [{"starting_time": 1610370183943, "ending_time": 1610370184034, "color":c1(4)}, {"starting_time": 1610370184034, "ending_time": 1610370535263, "color":c2(4), "label": "5m 53s \/ 985.5 MB"}, {"starting_time": 1610370535263, "ending_time": 1610370537024, "color":c1(4)}]},
+{"label": "run_peptideshaker (4)", "times": [{"starting_time": 1610370185566, "ending_time": 1610370185660, "color":c1(4)}, {"starting_time": 1610370185660, "ending_time": 1610370528754, "color":c2(4), "label": "5m 46s \/ 983.4 MB"}, {"starting_time": 1610370528754, "ending_time": 1610370531833, "color":c1(4)}]},
+{"label": "run_peptideshaker (5)", "times": [{"starting_time": 1610370188991, "ending_time": 1610370189086, "color":c1(4)}, {"starting_time": 1610370189086, "ending_time": 1610370528348, "color":c2(4), "label": "5m 43s \/ 947.2 MB"}, {"starting_time": 1610370528348, "ending_time": 1610370531849, "color":c1(4)}]},
+{"label": "run_peptideshaker (6)", "times": [{"starting_time": 1610370193483, "ending_time": 1610370193574, "color":c1(4)}, {"starting_time": 1610370193574, "ending_time": 1610370571951, "color":c2(4), "label": "6m 20s \/ 1 GB"}, {"starting_time": 1610370571951, "ending_time": 1610370573402, "color":c1(4)}]},
+{"label": "run_peptideshaker (7)", "times": [{"starting_time": 1610370193788, "ending_time": 1610370193882, "color":c1(4)}, {"starting_time": 1610370193882, "ending_time": 1610370537998, "color":c2(4), "label": "5m 46s \/ 1008.7 MB"}, {"starting_time": 1610370537998, "ending_time": 1610370539593, "color":c1(4)}]},
+{"label": "run_peptideshaker (8)", "times": [{"starting_time": 1610370197097, "ending_time": 1610370197190, "color":c1(4)}, {"starting_time": 1610370197190, "ending_time": 1610370551861, "color":c2(4), "label": "5m 56s \/ 946.5 MB"}, {"starting_time": 1610370551861, "ending_time": 1610370553387, "color":c1(4)}]},
+{"label": "run_peptideshaker (9)", "times": [{"starting_time": 1610370206032, "ending_time": 1610370206122, "color":c1(4)}, {"starting_time": 1610370206122, "ending_time": 1610370537689, "color":c2(4), "label": "5m 33s \/ 1012.9 MB"}, {"starting_time": 1610370537689, "ending_time": 1610370539204, "color":c1(4)}]},
+{"label": "run_peptideshaker (10)", "times": [{"starting_time": 1610370209335, "ending_time": 1610370209430, "color":c1(4)}, {"starting_time": 1610370209430, "ending_time": 1610370568997, "color":c2(4), "label": "6m 1s \/ 957.5 MB"}, {"starting_time": 1610370568997, "ending_time": 1610370570554, "color":c1(4)}]},
+{"label": "run_peptideshaker (11)", "times": [{"starting_time": 1610370215904, "ending_time": 1610370215997, "color":c1(4)}, {"starting_time": 1610370215997, "ending_time": 1610370573896, "color":c2(4), "label": "5m 59s \/ 1 GB"}, {"starting_time": 1610370573896, "ending_time": 1610370575351, "color":c1(4)}]},
+{"label": "run_peptideshaker (12)", "times": [{"starting_time": 1610370222964, "ending_time": 1610370223058, "color":c1(4)}, {"starting_time": 1610370223058, "ending_time": 1610370579751, "color":c2(4), "label": "5m 58s \/ 990.4 MB"}, {"starting_time": 1610370579751, "ending_time": 1610370581403, "color":c1(4)}]},
+{"label": "run_peptideshaker (13)", "times": [{"starting_time": 1610370223121, "ending_time": 1610370223216, "color":c1(4)}, {"starting_time": 1610370223216, "ending_time": 1610370569472, "color":c2(4), "label": "5m 48s \/ 950.6 MB"}, {"starting_time": 1610370569472, "ending_time": 1610370571019, "color":c1(4)}]},
+{"label": "run_peptideshaker (14)", "times": [{"starting_time": 1610370227135, "ending_time": 1610370227229, "color":c1(4)}, {"starting_time": 1610370227229, "ending_time": 1610370584371, "color":c2(4), "label": "5m 59s \/ 974.5 MB"}, {"starting_time": 1610370584371, "ending_time": 1610370585852, "color":c1(4)}]},
+{"label": "run_peptideshaker (15)", "times": [{"starting_time": 1610370230594, "ending_time": 1610370230689, "color":c1(4)}, {"starting_time": 1610370230689, "ending_time": 1610370570116, "color":c2(4), "label": "5m 41s \/ 930.7 MB"}, {"starting_time": 1610370570116, "ending_time": 1610370571463, "color":c1(4)}]},
+{"label": "run_peptideshaker (16)", "times": [{"starting_time": 1610370232128, "ending_time": 1610370232223, "color":c1(4)}, {"starting_time": 1610370232223, "ending_time": 1610370586968, "color":c2(4), "label": "5m 56s \/ 951.4 MB"}, {"starting_time": 1610370586968, "ending_time": 1610370588356, "color":c1(4)}]},
+{"label": "run_peptideshaker (17)", "times": [{"starting_time": 1610370248699, "ending_time": 1610370248794, "color":c1(4)}, {"starting_time": 1610370248794, "ending_time": 1610370596084, "color":c2(4), "label": "5m 49s \/ 959.3 MB"}, {"starting_time": 1610370596084, "ending_time": 1610370597445, "color":c1(4)}]},
+{"label": "run_peptideshaker (18)", "times": [{"starting_time": 1610370289526, "ending_time": 1610370289620, "color":c1(4)}, {"starting_time": 1610370289620, "ending_time": 1610370639683, "color":c2(4), "label": "5m 52s \/ 1018.1 MB"}, {"starting_time": 1610370639683, "ending_time": 1610370641138, "color":c1(4)}]},
+{"label": "run_peptideshaker (19)", "times": [{"starting_time": 1610370323891, "ending_time": 1610370323986, "color":c1(4)}, {"starting_time": 1610370323986, "ending_time": 1610370701444, "color":c2(4), "label": "6m 19s \/ 972 MB"}, {"starting_time": 1610370701444, "ending_time": 1610370702880, "color":c1(4)}]},
+{"label": "run_peptideshaker (20)", "times": [{"starting_time": 1610370500663, "ending_time": 1610370500750, "color":c1(4)}, {"starting_time": 1610370500750, "ending_time": 1610370875465, "color":c2(4), "label": "6m 16s \/ 987.8 MB"}, {"starting_time": 1610370875465, "ending_time": 1610370877023, "color":c1(4)}]},
+{"label": "run_peptideshaker (21)", "times": [{"starting_time": 1610370516004, "ending_time": 1610370516099, "color":c1(4)}, {"starting_time": 1610370516099, "ending_time": 1610370888403, "color":c2(4), "label": "6m 14s \/ 1004.9 MB"}, {"starting_time": 1610370888403, "ending_time": 1610370889945, "color":c1(4)}]},
+{"label": "run_peptideshaker (22)", "times": [{"starting_time": 1610370531838, "ending_time": 1610370531933, "color":c1(4)}, {"starting_time": 1610370531933, "ending_time": 1610370904536, "color":c2(4), "label": "6m 14s \/ 1 GB"}, {"starting_time": 1610370904536, "ending_time": 1610370906297, "color":c1(4)}]},
+{"label": "run_peptideshaker (23)", "times": [{"starting_time": 1610370531854, "ending_time": 1610370531934, "color":c1(4)}, {"starting_time": 1610370531934, "ending_time": 1610370900606, "color":c2(4), "label": "6m 11s \/ 947.4 MB"}, {"starting_time": 1610370900606, "ending_time": 1610370902361, "color":c1(4)}]},
+{"label": "get_peptideshaker_tsv (1)", "times": [{"starting_time": 1610370537029, "ending_time": 1610370537124, "color":c1(5)}, {"starting_time": 1610370537124, "ending_time": 1610370872348, "color":c2(5), "label": "5m 37s \/ 699.1 MB"}, {"starting_time": 1610370872348, "ending_time": 1610370873845, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (2)", "times": [{"starting_time": 1610370539210, "ending_time": 1610370539304, "color":c1(5)}, {"starting_time": 1610370539304, "ending_time": 1610370883223, "color":c2(5), "label": "5m 46s \/ 815.8 MB"}, {"starting_time": 1610370883223, "ending_time": 1610370884842, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (3)", "times": [{"starting_time": 1610370539599, "ending_time": 1610370539693, "color":c1(5)}, {"starting_time": 1610370539693, "ending_time": 1610370872032, "color":c2(5), "label": "5m 34s \/ 847.9 MB"}, {"starting_time": 1610370872032, "ending_time": 1610370873731, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (4)", "times": [{"starting_time": 1610370553393, "ending_time": 1610370553487, "color":c1(5)}, {"starting_time": 1610370553487, "ending_time": 1610370879746, "color":c2(5), "label": "5m 28s \/ 662.9 MB"}, {"starting_time": 1610370879746, "ending_time": 1610370881203, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (5)", "times": [{"starting_time": 1610370570560, "ending_time": 1610370570654, "color":c1(5)}, {"starting_time": 1610370570654, "ending_time": 1610370906673, "color":c2(5), "label": "5m 38s \/ 650.8 MB"}, {"starting_time": 1610370906673, "ending_time": 1610370908463, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (6)", "times": [{"starting_time": 1610370571026, "ending_time": 1610370571120, "color":c1(5)}, {"starting_time": 1610370571120, "ending_time": 1610370891394, "color":c2(5), "label": "5m 22s \/ 669.6 MB"}, {"starting_time": 1610370891394, "ending_time": 1610370892891, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (7)", "times": [{"starting_time": 1610370571472, "ending_time": 1610370571563, "color":c1(5)}, {"starting_time": 1610370571563, "ending_time": 1610370901793, "color":c2(5), "label": "5m 32s \/ 701.9 MB"}, {"starting_time": 1610370901793, "ending_time": 1610370903378, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (8)", "times": [{"starting_time": 1610370573408, "ending_time": 1610370573502, "color":c1(5)}, {"starting_time": 1610370573502, "ending_time": 1610370917151, "color":c2(5), "label": "5m 45s \/ 833.4 MB"}, {"starting_time": 1610370917151, "ending_time": 1610370918656, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (9)", "times": [{"starting_time": 1610370575357, "ending_time": 1610370575451, "color":c1(5)}, {"starting_time": 1610370575451, "ending_time": 1610370918554, "color":c2(5), "label": "5m 45s \/ 813.3 MB"}, {"starting_time": 1610370918554, "ending_time": 1610370920051, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (10)", "times": [{"starting_time": 1610370581408, "ending_time": 1610370581503, "color":c1(5)}, {"starting_time": 1610370581503, "ending_time": 1610370916284, "color":c2(5), "label": "5m 36s \/ 774 MB"}, {"starting_time": 1610370916284, "ending_time": 1610370917654, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (11)", "times": [{"starting_time": 1610370585857, "ending_time": 1610370585952, "color":c1(5)}, {"starting_time": 1610370585952, "ending_time": 1610370908738, "color":c2(5), "label": "5m 24s \/ 806.1 MB"}, {"starting_time": 1610370908738, "ending_time": 1610370910290, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (12)", "times": [{"starting_time": 1610370588361, "ending_time": 1610370588457, "color":c1(5)}, {"starting_time": 1610370588457, "ending_time": 1610370951466, "color":c2(5), "label": "6m 5s \/ 880.7 MB"}, {"starting_time": 1610370951466, "ending_time": 1610370952915, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (13)", "times": [{"starting_time": 1610370597452, "ending_time": 1610370597545, "color":c1(5)}, {"starting_time": 1610370597545, "ending_time": 1610370941589, "color":c2(5), "label": "5m 46s \/ 815.3 MB"}, {"starting_time": 1610370941589, "ending_time": 1610370943003, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (14)", "times": [{"starting_time": 1610370641144, "ending_time": 1610370641238, "color":c1(5)}, {"starting_time": 1610370641238, "ending_time": 1610370977404, "color":c2(5), "label": "5m 38s \/ 641.7 MB"}, {"starting_time": 1610370977404, "ending_time": 1610370978836, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (15)", "times": [{"starting_time": 1610370702886, "ending_time": 1610370702981, "color":c1(5)}, {"starting_time": 1610370702981, "ending_time": 1610371040353, "color":c2(5), "label": "5m 39s \/ 868.9 MB"}, {"starting_time": 1610371040353, "ending_time": 1610371041724, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (16)", "times": [{"starting_time": 1610370873736, "ending_time": 1610370873831, "color":c1(5)}, {"starting_time": 1610370873831, "ending_time": 1610371207401, "color":c2(5), "label": "5m 35s \/ 879.2 MB"}, {"starting_time": 1610371207401, "ending_time": 1610371208762, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (17)", "times": [{"starting_time": 1610370873850, "ending_time": 1610370873945, "color":c1(5)}, {"starting_time": 1610370873945, "ending_time": 1610371203313, "color":c2(5), "label": "5m 31s \/ 858 MB"}, {"starting_time": 1610371203313, "ending_time": 1610371204645, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (18)", "times": [{"starting_time": 1610370877029, "ending_time": 1610370877123, "color":c1(5)}, {"starting_time": 1610370877123, "ending_time": 1610371205625, "color":c2(5), "label": "5m 30s \/ 842.7 MB"}, {"starting_time": 1610371205625, "ending_time": 1610371207004, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (19)", "times": [{"starting_time": 1610370881208, "ending_time": 1610370881304, "color":c1(5)}, {"starting_time": 1610370881304, "ending_time": 1610371238736, "color":c2(5), "label": "5m 59s \/ 762.7 MB"}, {"starting_time": 1610371238736, "ending_time": 1610371240040, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (20)", "times": [{"starting_time": 1610370884846, "ending_time": 1610370884963, "color":c1(5)}, {"starting_time": 1610370884963, "ending_time": 1610371237709, "color":c2(5), "label": "5m 54s \/ 639.3 MB"}, {"starting_time": 1610371237709, "ending_time": 1610371239070, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (21)", "times": [{"starting_time": 1610370889955, "ending_time": 1610370890046, "color":c1(5)}, {"starting_time": 1610370890046, "ending_time": 1610371233996, "color":c2(5), "label": "5m 45s \/ 880.3 MB"}, {"starting_time": 1610371233996, "ending_time": 1610371235319, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (22)", "times": [{"starting_time": 1610370902370, "ending_time": 1610370902461, "color":c1(5)}, {"starting_time": 1610370902461, "ending_time": 1610371250081, "color":c2(5), "label": "5m 49s \/ 638.1 MB"}, {"starting_time": 1610371250081, "ending_time": 1610371251690, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (23)", "times": [{"starting_time": 1610370906306, "ending_time": 1610370906398, "color":c1(5)}, {"starting_time": 1610370906398, "ending_time": 1610371250331, "color":c2(5), "label": "5m 45s \/ 890.7 MB"}, {"starting_time": 1610371250331, "ending_time": 1610371251768, "color":c1(5)}]},
+{"label": "run_peptideshaker (24)", "times": [{"starting_time": 1610372886209, "ending_time": 1610372886282, "color":c1(4)}, {"starting_time": 1610372886282, "ending_time": 1610373222771, "color":c2(4), "label": "5m 38s \/ 1006.9 MB"}, {"starting_time": 1610373222771, "ending_time": 1610373224012, "color":c1(4)}]},
+{"label": "run_peptideshaker (25)", "times": [{"starting_time": 1610372899389, "ending_time": 1610372899476, "color":c1(4)}, {"starting_time": 1610372899476, "ending_time": 1610373237009, "color":c2(4), "label": "5m 39s \/ 976 MB"}, {"starting_time": 1610373237009, "ending_time": 1610373238347, "color":c1(4)}]},
+{"label": "run_peptideshaker (26)", "times": [{"starting_time": 1610372961446, "ending_time": 1610372961535, "color":c1(4)}, {"starting_time": 1610372961535, "ending_time": 1610373279202, "color":c2(4), "label": "5m 19s \/ 1.1 GB"}, {"starting_time": 1610373279202, "ending_time": 1610373280497, "color":c1(4)}]},
+{"label": "run_peptideshaker (27)", "times": [{"starting_time": 1610372974869, "ending_time": 1610372974958, "color":c1(4)}, {"starting_time": 1610372974958, "ending_time": 1610373313868, "color":c2(4), "label": "5m 40s \/ 1 GB"}, {"starting_time": 1610373313868, "ending_time": 1610373315061, "color":c1(4)}]},
+{"label": "get_peptideshaker_tsv (24)", "times": [{"starting_time": 1610373224025, "ending_time": 1610373224112, "color":c1(5)}, {"starting_time": 1610373224112, "ending_time": 1610373549531, "color":c2(5), "label": "5m 27s \/ 846.6 MB"}, {"starting_time": 1610373549531, "ending_time": 1610373550782, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (25)", "times": [{"starting_time": 1610373238361, "ending_time": 1610373238447, "color":c1(5)}, {"starting_time": 1610373238447, "ending_time": 1610373565281, "color":c2(5), "label": "5m 28s \/ 758.4 MB"}, {"starting_time": 1610373565281, "ending_time": 1610373566574, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (26)", "times": [{"starting_time": 1610373280509, "ending_time": 1610373280596, "color":c1(5)}, {"starting_time": 1610373280596, "ending_time": 1610373584203, "color":c2(5), "label": "5m 5s \/ 877.5 MB"}, {"starting_time": 1610373584203, "ending_time": 1610373585379, "color":c1(5)}]},
+{"label": "get_peptideshaker_tsv (27)", "times": [{"starting_time": 1610373315076, "ending_time": 1610373315161, "color":c1(5)}, {"starting_time": 1610373315161, "ending_time": 1610373634977, "color":c2(5), "label": "5m 21s \/ 847.4 MB"}, {"starting_time": 1610373634977, "ending_time": 1610373636131, "color":c1(5)}]},
+{"label": "flashLFQ_all", "times": [{"starting_time": 1610373636179, "ending_time": 1610373636230, "color":c1(6)}, {"starting_time": 1610373636230, "ending_time": 1610377313928, "color":c2(6), "label": "1h 1m 19s \/ 3.9 GB"}, {"starting_time": 1610377313928, "ending_time": 1610377315382, "color":c1(6)}]},
+{"label": "run_msqrob (1)", "times": [{"starting_time": 1610377315426, "ending_time": 1610377315481, "color":c1(7)}, {"starting_time": 1610377315481, "ending_time": 1610377591743, "color":c2(7), "label": "4m 38s \/ 942.4 MB"}, {"starting_time": 1610377591743, "ending_time": 1610377593157, "color":c1(7)}]}
+]
+
+
+function getTickFormat() {
+  var MIN = 1000 * 60
+  var HOUR = MIN * 60
+  var DAY = HOUR * 24
+  var delta = (endingMillis - beginningMillis)
+
+  if( delta < 2 * MIN ) {
+    return {
+      format: d3.time.format("%S"),
+      tickTime: d3.time.seconds,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * HOUR ) {
+    return {
+      format: d3.time.format("%M"),
+      tickTime: d3.time.minutes,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * DAY ) {
+    return {
+      format: d3.time.format("%H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 1,
+      tickSize: 6
+    }
+  }
+
+  if( delta <= 7 * DAY ) {
+    return {
+      format: d3.time.format("%b %e %H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 6,
+      tickSize: 6
+    }
+  }
+
+  return {
+    format: d3.time.format("%b %e"),
+    tickTime: d3.time.days,
+    tickInterval: 1,
+    tickSize: 6
+  }
+}
+
+function getLabelMargin(scale) {
+    $('<span class="labelSpan" style="display: none"></span>').appendTo('body');
+
+    var labelMargin = 0
+    $.each(data, function (key, value) {
+      labelMargin = Math.max(labelMargin, $('.labelSpan').html(value.label).width());
+    });
+
+    $('.labelSpan').remove();
+
+    return (labelMargin * scale);
+}
+
+function render() {
+  handler=null;
+  $("#timeline").empty()
+  $('#label_elapsed').text(elapsed)
+  $('#label_launch').text( d3.time.format('%d %b %Y %H:%M')(new Date(beginningMillis)) )
+
+  var width = $(window).width();
+  var chart = d3.timeline()
+    .stack() // toggles graph stacking
+    .margin({left:getLabelMargin(0.85), right:100, top:0, bottom:0})
+    .tickFormat( getTickFormat() )
+    .rowSeperators('#f5f5f5')
+    .showTimeAxisTick()
+    ;
+  var svg = d3.select("#timeline").append("svg").attr("width", width).datum(data).call(chart);
+}
+
+function hrz() {
+if( handler != null ) clearTimeout(handler)
+  handler = setTimeout(render, 150);
+}
+
+$(document).ready(render)
+$(window).resize(hrz); // resize the applet on window resize
+</script>
+</head>
+
+<body>
+<div>
+  <h3>Processes execution timeline</h3>
+  <p>
+    Launch time: <span id='label_launch'> </span><br>
+    Elapsed time: <span id='label_elapsed'> </span><br>
+    Legend: job wall time / memory usage (RAM) <span id='label_legend'> </span>
+  </p>
+  <div id="timeline"></div>
+</div>
+
+<div id='footer'>
+  Created with Nextflow -- <a href='http://www.nextflow.io' target='_blank'>http://nextflow.io</a>
+</div>
+
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Clink href='" + prot + "fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css' %3E%3C/link%3E"));
+</script>
+</body>
+</html>
