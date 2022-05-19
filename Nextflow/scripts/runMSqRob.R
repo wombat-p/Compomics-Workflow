@@ -75,7 +75,7 @@ for (type in exp_annotation$raw_file) {
 all_prot <- Reduce(function(x, y) merge(x, y, by=1, all=TRUE), all_proteins)
 # merging with quant data
 rownames(all_prot) <- all_prot[,1]
-stand_prot_quant <- cbind(all_prot[rownames(result),], log2(quant_prots[rownames(result), ]), result[,grep("estimate$|qval$", colnames(result))])
+stand_prot_quant <- cbind(all_prot[rownames(result),], log2(quant_prots[rownames(result), ]), result[,grep("estimate$|qval$|pval$", colnames(result))])
 # Exchanging file name based columns names to the ones defined in the experimental design
 for (r in 1:nrow(exp_annotation)) {
   colnames(stand_prot_quant) <- sub(paste0("Intensity_", exp_annotation$raw_file[r]), paste0("abundance_", exp_annotation$exp_condition[r], "_",
@@ -87,7 +87,10 @@ ttt <- sub("estimate$", "", ttt)
 colnames(stand_prot_quant)[grep("estimate$", colnames(stand_prot_quant))] <- paste0("log_fold_change_", ttt)
 ttt <- colnames(stand_prot_quant)[grep("qval$", colnames(stand_prot_quant))] 
 ttt <- sub("qval$", "", ttt)
-colnames(stand_prot_quant)[grep("qval$", colnames(stand_prot_quant))] <- paste0("differential_regulation_", ttt)
+colnames(stand_prot_quant)[grep("qval$", colnames(stand_prot_quant))] <- paste0("differential_abundance_qvalue_", ttt)
+ttt <- colnames(stand_prot_quant)[grep("pval$", colnames(stand_prot_quant))] 
+ttt <- sub("pval$", "", ttt)
+colnames(stand_prot_quant)[grep("pval$", colnames(stand_prot_quant))] <- paste0("differential_abundance_pvalue_", ttt)
 write.csv(stand_prot_quant, "stand_prot_quant_merged.csv", row.names=F)
 
 
