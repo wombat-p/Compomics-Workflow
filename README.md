@@ -1,3 +1,8 @@
+# Update
+This project and workflow has been merged into the WOMBAT pipelines.
+
+Please go to https://github.com/wombat-p/WOMBAT-Pipelines
+
 # Workflow to analyze label-free data with the compomics pipeline
 
 This workflow is based on a docker image which is available at the docker hub (https://hub.docker.com/repository/docker/veitveit/compomicsworkflow) and is downloaded automatically.
